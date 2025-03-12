@@ -1,0 +1,23 @@
+type ProfessorDTO{
+    id: ID
+    name: String!
+    email: String!
+    password: String!
+    registrationNumber: Int!
+    deleted: Boolean
+}
+
+type Query{
+    listProfessors: [ProfessorDTO!]!
+    getProfessorById(id: ID!): ProfessorDTO
+}
+
+type Mutation{
+    createProfessor(name: String!, email: String!, password: String!, registrationNumber: Int!): ProfessorDTO!
+    updateProfessor(id: ID!, name: String, email: String, password: String, registrationNumber: Int): ProfessorDTO!
+    deleteProfessorById(id: ID!): ProfessorDTO
+}
+
+type Subscription{
+    professorAdded: ProfessorDTO!
+}
