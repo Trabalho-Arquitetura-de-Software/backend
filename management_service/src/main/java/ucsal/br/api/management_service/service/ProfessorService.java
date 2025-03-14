@@ -54,7 +54,7 @@ public class ProfessorService {
                 .orElseThrow(() -> new EntityNotFoundException("Professor not found with ID: " + professorDTO.getId()));
 
         if (professor.isDeleted()) {
-            throw new EntityNotFoundException("Professor with ID: " + professorDTO.getId() + " is deleted");
+            throw new EntityNotFoundException("Professor not found with ID: " + professorDTO.getId());
         }
 
         professor.setName(professorDTO.getName());
