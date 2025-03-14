@@ -6,3 +6,10 @@
 
 Deve ser utilizado obrigatoriamente a linguagem JAVA com Spring.
 Necessário a identificação da tecnologia utilizada na entrega do formulário com o link desse projeto
+
+- Para rodar o banco de dados basta executar o comando: `docker compose up -d`
+
+obs: precisa ter o docker instalado na máquina para que o comando funcione.
+<div>
+  <p>Dica!: acesse <a href="https://www.docker.com/products/docker-desktop/">Docker</a> para baixa-lo em sua máquina!</p>
+</div>
