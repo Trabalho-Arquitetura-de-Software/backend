@@ -1,23 +1,33 @@
-type ProfessorDTO{
+type UserDTO{
     id: ID
     name: String!
     email: String!
     password: String!
-    registrationNumber: Int!
-    deleted: Boolean
+    role: UserRole!
+}
+
+type AuthToken{
+    token: String!
+}
+
+enum UserRole{
+    ADMIN,
+    PROFESSOR,
+    STUDENT
 }
 
 type Query{
-    listProfessors: [ProfessorDTO!]!
-    getProfessorById(id: ID!): ProfessorDTO
+    findUserByEmail(email: String!): UserDTO!
+    findUserByRole(role: UserRole!): [UserDTO!]!
+    findUserById(id: ID!): UserDTO!
+    findAllUsers:[UserDTO!]!
 }
 
 type Mutation{
-    createProfessor(name: String!, email: String!, password: String!, registrationNumber: Int!): ProfessorDTO!
-    updateProfessor(id: ID!, name: String, email: String, password: String, registrationNumber: Int): ProfessorDTO!
-    deleteProfessorById(id: ID!): ProfessorDTO
-}
+    saveUser(name: String!, email: String!, password: String!, role: UserRole!): UserDTO!
+    updateUser(id: ID!, name: String, email: String, password: String, role: UserRole): UserDTO!
+    deleteUser(id: ID!): UserDTO!
 
-type Subscription{
-    professorAdded: ProfessorDTO!
+    login(email: String!, password: String!): AuthToken!
+    register(name: String!, email: String!, password: String!, role: UserRole!): UserDTO!
 }
