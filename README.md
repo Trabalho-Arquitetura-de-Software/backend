@@ -6,10 +6,47 @@
 
 Deve ser utilizado obrigatoriamente a linguagem JAVA com Spring.
 Necessário a identificação da tecnologia utilizada na entrega do formulário com o link desse projeto
+___
 
-- Para rodar o banco de dados basta executar o comando: `docker compose up -d`
+# Management_Service
+## 📌Descrição
+Está é uma API GraphQL feita com Spring, que tem por objetivo gerenciar projetos para a fábrica de software e autenticar os usuários para que estes possam utilizá-la.
 
-obs: precisa ter o docker instalado na máquina para que o comando funcione.
-<div>
-  <p>Dica!: acesse <a href="https://www.docker.com/products/docker-desktop/">Docker</a> para baixa-lo em sua máquina!</p>
-</div>
+## ✅Como Usar!
+- Para utilizar essa aplicação primeiro é necessário iniciar o banco de dados, que se encontra no container configurado abaixo:
+  - Para iniciar o banco de dados basta executar o comando: `docker compose up -d`
+  obs: precisa ter o docker instalado na máquina para que o comando funcione.
+  <div>
+    <p>Dica!: acesse <a href="https://www.docker.com/products/docker-desktop/">Docker</a> para baixa-lo em sua máquina!</p>
+  </div>
+
+- Após iniciar o banco, já podemos startar a aplicação. Para isso, basta inicia-la com o IntelliJ, ou com a IDE de sua preferência.
+
+- Após iniciar a aplicação, acesse: `localhost:8080/graphiql`
+É neste endereço que a aplicação roda localmente.
+
+- Dentro do playground da aplicação, utilize este email e password na consulta de login para conseguir seu JWT, e assim, realizar as requisições que desejar:
+Exemplo da consulta de Login:
+```
+mutation Login{
+  login(email: null, password: null){
+    token
+  }
+}
+```
+
+Email e Password:
+```
+email: "admin@test.com"
+password: "admin123"
+```
+
+- Agora com seu Token em mãos, realize as consultas que desejar. Para isso basta adicionar o token ao campo Header que fica logo abaixo do campo que recebe as consultas.
+JSON para o token:
+```
+{
+  "Authorization": "Bearer SEU_JWT_AQUI"
+}
+```
+- Ex:
+![image](https://github.com/user-attachments/assets/f1bddbc8-d5bf-44e0-b108-43ceea93a112)
