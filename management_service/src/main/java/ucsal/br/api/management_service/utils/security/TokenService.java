@@ -20,11 +20,14 @@ public class TokenService {
     @Value("${api.security.token.secret}")
     private String secret;
 
+    @Value("${api.security.issuer.secret}")
+    private String issuer;
+
     public String generateToken(UserEntity user) {
         try{
             Algorithm algorithm = Algorithm.HMAC256(secret);
             return JWT.create()
-                    .withIssuer("codigos-caoticos-graphql-api")
+                    .withIssuer(issuer)
                     .withSubject(user.getEmail())
                     .withExpiresAt(getExpiration())
                     .sign(algorithm);
@@ -37,7 +40,7 @@ public class TokenService {
         try {
             Algorithm algorithm = Algorithm.HMAC256(secret);
             return JWT.require(algorithm)
-                    .withIssuer("codigos-caoticos-graphql-api")
+                    .withIssuer(issuer)
                     .build()
                     .verify(token)
                     .getSubject();

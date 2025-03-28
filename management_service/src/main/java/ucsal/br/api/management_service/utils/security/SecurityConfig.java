@@ -32,6 +32,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers("/graphql").permitAll()
                         .requestMatchers(HttpMethod.GET,"/graphiql").permitAll()
                         .anyRequest().authenticated()
                 )
