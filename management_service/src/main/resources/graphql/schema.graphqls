@@ -6,6 +6,14 @@ type UserDTO{
     role: UserRole!
 }
 
+type GroupDTO{
+    id: ID
+    name: String!
+    availableForProjects: Boolean!
+    coordinator: UserDTO!
+    students: [UserDTO!]!
+}
+
 type AuthToken{
     token: String!
 }
@@ -21,13 +29,31 @@ type Query{
     findUserByRole(role: UserRole!): [UserDTO!]!
     findUserById(id: ID!): UserDTO!
     findAllUsers:[UserDTO!]!
+
+    findGroupById(id: ID!): GroupDTO!
+    findAllGroups: [GroupDTO!]!
 }
+
+
 
 type Mutation{
     saveUser(name: String!, email: String!, password: String!, role: UserRole!): UserDTO!
     updateUser(id: ID!, name: String, email: String, password: String, role: UserRole): UserDTO!
     deleteUser(id: ID!): UserDTO!
 
+    saveGroup(name: String!, availableForProjects: Boolean!, coordinator: UserDTO!, students: [UserDTO!]!): GroupDTO!
+
+    updateGroup(id: ID!,name: String, availableForProjects: Boolean, coordinator: UserDTO, students: [UserDTO!]): GroupDTO!
+
+    deleteGroup(id: ID!): Boolean!
+
+
     login(email: String!, password: String!): AuthToken!
     register(name: String!, email: String!, password: String!, role: UserRole!): UserDTO!
+
 }
+
+
+
+
+
