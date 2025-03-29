@@ -19,7 +19,7 @@ public class GroupEntity {
     private String name;
 
     @Column(nullable = false)
-    private boolean avaliaveForProjects;
+    private boolean availableForProjects;
 
     @OneToOne(mappedBy = "coodirnator_id",  cascade = {CascadeType.PERSIST})
     private UserEntity coordinator;
@@ -27,10 +27,10 @@ public class GroupEntity {
     @OneToMany(mappedBy = "student_id", cascade = {CascadeType.PERSIST}, fetch = FetchType.LAZY)
     private List<UserEntity> students;
 
-    public GroupEntity(UUID id, String name, boolean avaliaveForProjects, UserEntity coordinator, List<UserEntity> students) {
+    public GroupEntity(UUID id, String name, boolean availableForProjects, UserEntity coordinator, List<UserEntity> students) {
         this.id = id;
         this.name = name;
-        this.avaliaveForProjects = avaliaveForProjects;
+        this.availableForProjects = availableForProjects;
         this.coordinator = coordinator;
         this.students = students;
     }
@@ -38,9 +38,9 @@ public class GroupEntity {
     public GroupEntity() {
     }
 
-    public GroupEntity(String name, boolean avaliaveForProjects, UserEntity coordinator, List<UserEntity> students) {
+    public GroupEntity(String name, boolean availableForProjects, UserEntity coordinator, List<UserEntity> students) {
         this.name = name;
-        this.avaliaveForProjects = avaliaveForProjects;
+        this.availableForProjects = availableForProjects;
         this.coordinator = coordinator;
         this.students = students;
     }
@@ -61,12 +61,12 @@ public class GroupEntity {
         this.name = name;
     }
 
-    public boolean isAvaliaveForProjects() {
-        return avaliaveForProjects;
+    public boolean isAvailableForProjects() {
+        return availableForProjects;
     }
 
-    public void setAvaliaveForProjects(boolean avaliaveForProjects) {
-        this.avaliaveForProjects = avaliaveForProjects;
+    public void setAvailableForProjects(boolean availableForProjects) {
+        this.availableForProjects = availableForProjects;
     }
 
     public UserEntity getCoordinator() {
