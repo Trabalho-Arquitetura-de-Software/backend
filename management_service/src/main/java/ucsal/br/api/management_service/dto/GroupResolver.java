@@ -1,29 +1,25 @@
-package ucsal.br.api.management_service.resolver;
+package ucsal.br.api.management_service.dto;
 
-import com.coxautodev.graphql.tools.GraphQLMutationResolver;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.graphql.data.method.annotation.Argument;
+import org.springframework.graphql.data.method.annotation.MutationMapping;
+import org.springframework.stereotype.Controller;
 import ucsal.br.api.management_service.dto.GroupDTO;
 import ucsal.br.api.management_service.dto.input.GroupInput;
 import ucsal.br.api.management_service.service.GroupService;
-import ucsal.br.api.management_service.service.UserService;
 
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
+@Controller
+public class GroupResolver {
 
-@Component
-public class GroupResolver implements GraphQLMutationResolver {
+    private final GroupService groupService;
 
-    @Autowired
-    private GroupService groupService;
-
-    @Autowired
-    private UserService userService;
+    public GroupResolver(GroupService groupService) {
+        this.groupService = groupService;
+    }
 
     @Transactional
-    public GroupDTO saveGroup(GroupInput input) {
+    @MutationMapping
+    public GroupDTO saveGroup(@Argument GroupInput input) {
         return groupService.save(
                 input.getName(),
                 input.isAvailableForProjects(),
