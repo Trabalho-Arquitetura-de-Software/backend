@@ -6,6 +6,16 @@ type UserDTO{
     role: UserRole!
 }
 
+input UserInput {
+    id: ID
+    name: String
+    email: String
+    password: String
+    role: UserRole
+}
+
+
+
 type GroupDTO{
     id: ID
     name: String!
@@ -36,22 +46,32 @@ type Query{
 
 
 
-type Mutation{
+type Mutation {
     saveUser(name: String!, email: String!, password: String!, role: UserRole!): UserDTO!
     updateUser(id: ID!, name: String, email: String, password: String, role: UserRole): UserDTO!
     deleteUser(id: ID!): UserDTO!
 
-    saveGroup(name: String!, availableForProjects: Boolean!, coordinator: UserDTO!, students: [UserDTO!]!): GroupDTO!
+    saveGroup(
+        name: String!
+        availableForProjects: Boolean!
+        coordinator: UserInput!
+        students: [UserInput!]!
+    ): GroupDTO!
 
-    updateGroup(id: ID!,name: String, availableForProjects: Boolean, coordinator: UserDTO, students: [UserDTO!]): GroupDTO!
+    updateGroup(
+        id: ID!
+        name: String
+        availableForProjects: Boolean
+        coordinator: UserInput
+        students: [UserInput!]
+    ): GroupDTO!
 
     deleteGroup(id: ID!): Boolean!
 
-
     login(email: String!, password: String!): AuthToken!
     register(name: String!, email: String!, password: String!, role: UserRole!): UserDTO!
-
 }
+
 
 
 
