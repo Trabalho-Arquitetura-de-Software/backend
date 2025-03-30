@@ -23,15 +23,24 @@ public class GroupService {
     private IUserRepository userRepository;
 
     public GroupDTO save(String name, boolean availableForProjects, UUID coordinatorId, List<UUID> studentIds) {
+        // Buscar coordenador pelo ID
         UserEntity coordinator = userRepository.findById(coordinatorId)
-                .orElseThrow(() -> new RuntimeException("Coordenador não encontrado"));
+                .orElseThrow(() -> new IllegalArgumentException("Coordenador com ID " + coordinatorId + " não encontrado"));
 
+        // Buscar lista de estudantes
         List<UserEntity> students = userRepository.findAllById(studentIds);
 
+        if (students.size() != studentIds.size()) {
+            throw new IllegalArgumentException("Um ou mais estudantes não foram encontrados");
+        }
+
+        // Criar entidade
         GroupEntity group = new GroupEntity(name, availableForProjects, coordinator, students);
 
+        // Salvar no banco
         GroupEntity saved = groupRepository.save(group);
 
+        // Retornar DTO
         return convertToDTO(saved);
     }
 
@@ -43,7 +52,7 @@ public class GroupService {
 
     private GroupDTO convertToDTO(GroupEntity entity) {
         GroupDTO dto = new GroupDTO();
-        dto.setId(entity.getId()); // <-- Aqui: Troque o tipo do DTO pra UUID (recomendado)
+        dto.setId(entity.getId());
         dto.setName(entity.getName());
         dto.setAvailableForProjects(entity.isAvailableForProjects());
 
@@ -51,6 +60,8 @@ public class GroupService {
             UserDTO coord = new UserDTO();
             coord.setId(entity.getCoordinator().getId());
             coord.setName(entity.getCoordinator().getName());
+            coord.setEmail(entity.getCoordinator().getEmail());
+            coord.setRole(entity.getCoordinator().getRole());
             dto.setCoordinator(coord);
         }
 
@@ -58,8 +69,11 @@ public class GroupService {
             UserDTO student = new UserDTO();
             student.setId(s.getId());
             student.setName(s.getName());
+            student.setEmail(s.getEmail());
+            student.setRole(s.getRole());
             return student;
         }).collect(Collectors.toList());
+
 
         dto.setStudents(studentDTOs);
         return dto;
