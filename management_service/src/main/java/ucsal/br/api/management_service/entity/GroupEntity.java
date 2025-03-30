@@ -25,7 +25,7 @@ public class GroupEntity {
     @JoinColumn(name = "coordinator_id")
     private UserEntity coordinator;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinTable(
             name = "group_students",
             joinColumns = @JoinColumn(name = "group_id"),
@@ -33,6 +33,8 @@ public class GroupEntity {
     )
     private List<UserEntity> students;
 
+    public GroupEntity() {
+    }
 
     public GroupEntity(UUID id, String name, boolean availableForProjects, UserEntity coordinator, List<UserEntity> students) {
         this.id = id;
@@ -40,9 +42,6 @@ public class GroupEntity {
         this.availableForProjects = availableForProjects;
         this.coordinator = coordinator;
         this.students = students;
-    }
-
-    public GroupEntity() {
     }
 
     public GroupEntity(String name, boolean availableForProjects, UserEntity coordinator, List<UserEntity> students) {
@@ -91,5 +90,4 @@ public class GroupEntity {
     public void setStudents(List<UserEntity> students) {
         this.students = students;
     }
-
 }
