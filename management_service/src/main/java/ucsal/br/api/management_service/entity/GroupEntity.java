@@ -21,11 +21,18 @@ public class GroupEntity {
     @Column(nullable = false)
     private boolean availableForProjects;
 
-    @OneToOne(mappedBy = "coodirnator_id",  cascade = {CascadeType.PERSIST})
+    @OneToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "coordinator_id")
     private UserEntity coordinator;
 
-    @OneToMany(mappedBy = "student_id", cascade = {CascadeType.PERSIST}, fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @JoinTable(
+            name = "group_students",
+            joinColumns = @JoinColumn(name = "group_id"),
+            inverseJoinColumns = @JoinColumn(name = "student_id")
+    )
     private List<UserEntity> students;
+
 
     public GroupEntity(UUID id, String name, boolean availableForProjects, UserEntity coordinator, List<UserEntity> students) {
         this.id = id;
