@@ -1,9 +1,10 @@
 package ucsal.br.api.management_service.dto;
 
 import java.util.List;
+import java.util.UUID;
 
 public class GroupDTO {
-    private Long id;
+    private UUID id;
     private String name;
     private Boolean availableForProjects;
     private UserDTO coordinator;
@@ -19,7 +20,7 @@ public class GroupDTO {
         this.students = students;
     }
 
-    public GroupDTO(Long id, String name, Boolean availableForProjects, UserDTO coordinator, List<UserDTO> students) {
+    public GroupDTO(UUID id, String name, Boolean availableForProjects, UserDTO coordinator, List<UserDTO> students) {
         this.id = id;
         this.name = name;
         this.availableForProjects = availableForProjects;
@@ -27,11 +28,11 @@ public class GroupDTO {
         this.students = students;
     }
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
