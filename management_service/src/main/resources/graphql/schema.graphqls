@@ -1,10 +1,40 @@
-type UserDTO{
+# ==========================================
+# ENUMS
+# ==========================================
+
+enum UserRole {
+    ADMIN
+    PROFESSOR
+    STUDENT
+}
+
+# ==========================================
+# TYPES
+# ==========================================
+
+type UserDTO {
     id: ID
     name: String!
     email: String!
     password: String!
     role: UserRole!
 }
+
+type GroupDTO {
+    id: ID
+    name: String!
+    availableForProjects: Boolean!
+    coordinator: UserDTO!
+    students: [UserDTO!]!
+}
+
+type AuthToken {
+    token: String!
+}
+
+# ==========================================
+# INPUTS
+# ==========================================
 
 input UserInput {
     id: ID
@@ -14,49 +44,50 @@ input UserInput {
     role: UserRole
 }
 
-
-
-type GroupDTO{
-    id: ID
+input GroupInput {
     name: String!
     availableForProjects: Boolean!
-    coordinator: UserDTO!
-    students: [UserDTO!]!
+    coordinatorId: ID!
+    studentIds: [ID!]!
 }
 
-type AuthToken{
-    token: String!
-}
+# ==========================================
+# QUERIES
+# ==========================================
 
-enum UserRole{
-    ADMIN,
-    PROFESSOR,
-    STUDENT
-}
-
-type Query{
+type Query {
     findUserByEmail(email: String!): UserDTO!
     findUserByRole(role: UserRole!): [UserDTO!]!
     findUserById(id: ID!): UserDTO!
-    findAllUsers:[UserDTO!]!
+    findAllUsers: [UserDTO!]!
 
-    findGroupById(id: ID!): GroupDTO!
+    findGroupById(id: ID!): GroupDTO
     findAllGroups: [GroupDTO!]!
 }
 
-
+# ==========================================
+# MUTATIONS
+# ==========================================
 
 type Mutation {
-    saveUser(name: String!, email: String!, password: String!, role: UserRole!): UserDTO!
-    updateUser(id: ID!, name: String, email: String, password: String, role: UserRole): UserDTO!
+    saveUser(
+        name: String!
+        email: String!
+        password: String!
+        role: UserRole!
+    ): UserDTO!
+
+    updateUser(
+        id: ID!
+        name: String
+        email: String
+        password: String
+        role: UserRole
+    ): UserDTO!
+
     deleteUser(id: ID!): UserDTO!
 
-    saveGroup(
-        name: String!
-        availableForProjects: Boolean!
-        coordinator: UserInput!
-        students: [UserInput!]!
-    ): GroupDTO!
+    saveGroup(input: GroupInput!): GroupDTO! # <- CORRETO!
 
     updateGroup(
         id: ID!
@@ -69,11 +100,11 @@ type Mutation {
     deleteGroup(id: ID!): Boolean!
 
     login(email: String!, password: String!): AuthToken!
-    register(name: String!, email: String!, password: String!, role: UserRole!): UserDTO!
+
+    register(
+        name: String!
+        email: String!
+        password: String!
+        role: UserRole!
+    ): UserDTO!
 }
-
-
-
-
-
-
