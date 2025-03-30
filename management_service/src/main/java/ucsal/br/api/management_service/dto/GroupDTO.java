@@ -1,6 +1,7 @@
 package ucsal.br.api.management_service.dto;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 public class GroupDTO {
@@ -14,6 +15,9 @@ public class GroupDTO {
     }
 
     public GroupDTO(String name, Boolean availableForProjects, UserDTO coordinator, List<UserDTO> students) {
+        if (name == null || coordinator == null || students == null) {
+            throw new IllegalArgumentException("Campos obrigatórios não podem ser nulos ao criar um GroupDTO.");
+        }
         this.name = name;
         this.availableForProjects = availableForProjects;
         this.coordinator = coordinator;
@@ -21,6 +25,9 @@ public class GroupDTO {
     }
 
     public GroupDTO(UUID id, String name, Boolean availableForProjects, UserDTO coordinator, List<UserDTO> students) {
+        if (id == null || name == null || coordinator == null || students == null) {
+            throw new IllegalArgumentException("Campos obrigatórios não podem ser nulos ao criar um GroupDTO.");
+        }
         this.id = id;
         this.name = name;
         this.availableForProjects = availableForProjects;
@@ -67,6 +74,4 @@ public class GroupDTO {
     public void setStudents(List<UserDTO> students) {
         this.students = students;
     }
-
-
 }
