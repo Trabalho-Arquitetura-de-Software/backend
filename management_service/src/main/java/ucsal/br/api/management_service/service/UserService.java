@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import ucsal.br.api.management_service.dto.UserDTO;
 import ucsal.br.api.management_service.entity.UserEntity;
 import ucsal.br.api.management_service.repository.IUserRepository;
+import ucsal.br.api.management_service.utils.exception.InvalidEmailException;
 import ucsal.br.api.management_service.utils.exception.UserAlredyExistsException;
 import ucsal.br.api.management_service.utils.exception.UserNotFoundException;
 import ucsal.br.api.management_service.utils.type.UserRole;
@@ -12,6 +13,8 @@ import ucsal.br.api.management_service.utils.type.UserRole;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 public class UserService {
@@ -19,6 +22,13 @@ public class UserService {
 
     public UserService(IUserRepository userRepository) {
         this.userRepository = userRepository;
+    }
+
+    public Optional<String> isEmail(String email) {
+        String regex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(email);
+        return matcher.matches() ? Optional.of(email) : Optional.empty();
     }
 
     public UserDTO findUserByEmail(String email) {
@@ -48,6 +58,10 @@ public class UserService {
         if (userRepository.findByEmail(userDTO.getEmail()) != null) throw new UserAlredyExistsException("User Already Exists");
         String encryptedPassword = new BCryptPasswordEncoder().encode(userDTO.getPassword());
         userDTO.setPassword(encryptedPassword);
+        if (isEmail(userDTO.getEmail()).isEmpty()) {
+            throw new InvalidEmailException("Invalid Email");
+        }
+        userDTO.setEmail(isEmail(userDTO.getEmail()).get());
         UserEntity userEntity = new UserEntity(userDTO);
         return new UserDTO(userRepository.save(userEntity));
     }

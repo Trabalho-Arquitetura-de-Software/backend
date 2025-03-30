@@ -47,7 +47,7 @@ public class UserController {
         return userService.findUserById(id);
     }
 
-    @PreAuthorize("hasRole('STUDENT')")
+    @PreAuthorize("hasRole('ADMIN')")
     @QueryMapping
     public List<UserDTO> findAllUsers() {
         return userService.findAllUsers();
@@ -77,7 +77,7 @@ public class UserController {
         var auth = authenticationManager.authenticate(usernamePassword);
 
         if (auth.isAuthenticated()) {
-            var user = (UserEntity) auth.getPrincipal(); // O próprio UserEntity já implementa UserDetails
+            var user = (UserEntity) auth.getPrincipal();
             var token = tokenService.generateToken(user);
             return new AuthToken(token);
         }
