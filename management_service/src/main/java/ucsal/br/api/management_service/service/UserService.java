@@ -73,7 +73,10 @@ public class UserService {
         if (userDTO.getEmail() != null) {
             userEntity.setEmail(userDTO.getEmail());
         }
-        userEntity.setPassword(userDTO.getPassword());
+
+        if (userDTO.getPassword() != null) {
+            userEntity.setPassword(userDTO.getPassword());
+        }
 
         if (userDTO.getRole() != null) {
             userEntity.setRole(userDTO.getRole());
