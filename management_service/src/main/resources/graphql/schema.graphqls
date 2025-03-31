@@ -36,14 +36,6 @@ type AuthToken {
 # INPUTS
 # ==========================================
 
-input UserInput {
-    id: ID
-    name: String
-    email: String
-    password: String
-    role: UserRole
-}
-
 input GroupInput {
     name: String!
     availableForProjects: Boolean!
@@ -87,17 +79,17 @@ type Mutation {
 
     deleteUser(id: ID!): UserDTO!
 
-    saveGroup(input: GroupInput!): GroupDTO! # <- CORRETO!
+    saveGroup(input: GroupInput!): GroupDTO!
 
     updateGroup(
         id: ID!
         name: String
         availableForProjects: Boolean
-        coordinator: UserInput
-        students: [UserInput!]
+        coordinatorId: ID
+        studentIds: [ID!]
     ): GroupDTO!
 
-    deleteGroup(id: ID!): Boolean!
+    deleteGroup(id: ID!): GroupDTO!
 
     login(email: String!, password: String!): AuthToken!
 
