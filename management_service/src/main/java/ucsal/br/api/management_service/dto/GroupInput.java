@@ -9,6 +9,17 @@ public class GroupInput {
     private UUID coordinatorId;
     private List<UUID> studentIds;
 
+    // Construtor sem parâmetros
+    public GroupInput() {}
+
+    // Construtor com parâmetros
+    public GroupInput(String name, boolean availableForProjects, UUID coordinatorId, List<UUID> studentIds) {
+        this.name = name;
+        this.availableForProjects = availableForProjects;
+        this.coordinatorId = coordinatorId;
+        this.studentIds = studentIds;
+    }
+
     // Getters e Setters
     public String getName() {
         return name;
