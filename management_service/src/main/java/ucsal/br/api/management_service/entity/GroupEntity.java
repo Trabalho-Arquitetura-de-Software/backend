@@ -1,6 +1,7 @@
 package ucsal.br.api.management_service.entity;
 
 import jakarta.persistence.*;
+import ucsal.br.api.management_service.dto.GroupDTO;
 
 import java.util.List;
 import java.util.UUID;
@@ -10,12 +11,10 @@ import java.util.UUID;
 public class GroupEntity {
 
     @Id
-    @PrimaryKeyJoinColumn
-    @Column(unique = true)
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String name;
 
     @Column(nullable = false)
@@ -33,8 +32,7 @@ public class GroupEntity {
     )
     private List<UserEntity> students;
 
-    public GroupEntity() {
-    }
+    public GroupEntity() {}
 
     public GroupEntity(UUID id, String name, boolean availableForProjects, UserEntity coordinator, List<UserEntity> students) {
         this.id = id;
@@ -50,6 +48,17 @@ public class GroupEntity {
         this.coordinator = coordinator;
         this.students = students;
     }
+
+    //  Construtor cria a entidade a partir do DTO e dos usuários já buscados do banco
+    public GroupEntity(GroupDTO dto, UserEntity coordinator, List<UserEntity> students) {
+        this.id = dto.getId();
+        this.name = dto.getName();
+        this.availableForProjects = dto.getAvailableForProjects();
+        this.coordinator = coordinator;
+        this.students = students;
+    }
+
+    // Getters e Setters
 
     public UUID getId() {
         return id;
@@ -67,7 +76,7 @@ public class GroupEntity {
         this.name = name;
     }
 
-    public boolean isAvailableForProjects() {
+    public boolean getAvailableForProjects() {
         return availableForProjects;
     }
 
