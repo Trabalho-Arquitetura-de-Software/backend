@@ -1,39 +1,47 @@
 package ucsal.br.api.management_service.dto;
 
+import ucsal.br.api.management_service.entity.GroupEntity;
+
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class GroupDTO {
+
     private UUID id;
     private String name;
     private Boolean availableForProjects;
     private UserDTO coordinator;
     private List<UserDTO> students;
 
-    public GroupDTO() {
-    }
+    public GroupDTO() {}
 
     public GroupDTO(String name, Boolean availableForProjects, UserDTO coordinator, List<UserDTO> students) {
-        if (name == null || coordinator == null || students == null) {
-            throw new IllegalArgumentException("Campos obrigatórios não podem ser nulos ao criar um GroupDTO.");
-        }
-        this.name = name;
-        this.availableForProjects = availableForProjects;
-        this.coordinator = coordinator;
-        this.students = students;
+        this.name = Objects.requireNonNull(name, "O nome não pode ser nulo");
+        this.availableForProjects = Objects.requireNonNull(availableForProjects, "Disponibilidade não pode ser nula");
+        this.coordinator = Objects.requireNonNull(coordinator, "Coordenador não pode ser nulo");
+        this.students = Objects.requireNonNull(students, "Lista de estudantes não pode ser nula");
     }
 
     public GroupDTO(UUID id, String name, Boolean availableForProjects, UserDTO coordinator, List<UserDTO> students) {
-        if (id == null || name == null || coordinator == null || students == null) {
-            throw new IllegalArgumentException("Campos obrigatórios não podem ser nulos ao criar um GroupDTO.");
-        }
-        this.id = id;
-        this.name = name;
-        this.availableForProjects = availableForProjects;
-        this.coordinator = coordinator;
-        this.students = students;
+        this.id = Objects.requireNonNull(id, "ID não pode ser nulo");
+        this.name = Objects.requireNonNull(name, "O nome não pode ser nulo");
+        this.availableForProjects = Objects.requireNonNull(availableForProjects, "Disponibilidade não pode ser nula");
+        this.coordinator = Objects.requireNonNull(coordinator, "Coordenador não pode ser nulo");
+        this.students = Objects.requireNonNull(students, "Lista de estudantes não pode ser nula");
     }
+
+    // ✅ Construtor baseado em GroupEntity (substitui convertToDTO)
+    public GroupDTO(GroupEntity entity) {
+        this.id = entity.getId();
+        this.name = entity.getName();
+        this.availableForProjects = entity.getAvailableForProjects();
+        this.coordinator = new UserDTO(entity.getCoordinator());
+        this.students = entity.getStudents().stream().map(UserDTO::new).collect(Collectors.toList());
+    }
+
+    // Getters e Setters
 
     public UUID getId() {
         return id;
