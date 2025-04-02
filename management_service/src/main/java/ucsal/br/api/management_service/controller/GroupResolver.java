@@ -1,4 +1,4 @@
-package ucsal.br.api.management_service.resolver;
+package ucsal.br.api.management_service.controller;
 
 import jakarta.transaction.Transactional;
 import org.springframework.graphql.data.method.annotation.Argument;
