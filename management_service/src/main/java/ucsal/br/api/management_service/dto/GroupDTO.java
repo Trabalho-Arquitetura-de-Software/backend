@@ -1,11 +1,10 @@
 package ucsal.br.api.management_service.dto;
 
 import ucsal.br.api.management_service.entity.GroupEntity;
+import ucsal.br.api.management_service.entity.UserEntity;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 public class GroupDTO {
 
@@ -18,27 +17,27 @@ public class GroupDTO {
     public GroupDTO() {}
 
     public GroupDTO(String name, Boolean availableForProjects, UserDTO coordinator, List<UserDTO> students) {
-        this.name = Objects.requireNonNull(name, "O nome não pode ser nulo");
-        this.availableForProjects = Objects.requireNonNull(availableForProjects, "Disponibilidade não pode ser nula");
-        this.coordinator = Objects.requireNonNull(coordinator, "Coordenador não pode ser nulo");
-        this.students = Objects.requireNonNull(students, "Lista de estudantes não pode ser nula");
+        this.name = name;
+        this.availableForProjects = availableForProjects;
+        this.coordinator = coordinator;
+        this.students = students;
     }
 
     public GroupDTO(UUID id, String name, Boolean availableForProjects, UserDTO coordinator, List<UserDTO> students) {
-        this.id = Objects.requireNonNull(id, "ID não pode ser nulo");
-        this.name = Objects.requireNonNull(name, "O nome não pode ser nulo");
-        this.availableForProjects = Objects.requireNonNull(availableForProjects, "Disponibilidade não pode ser nula");
-        this.coordinator = Objects.requireNonNull(coordinator, "Coordenador não pode ser nulo");
-        this.students = Objects.requireNonNull(students, "Lista de estudantes não pode ser nula");
+        this.id = id;
+        this.name = name;
+        this.availableForProjects = availableForProjects;
+        this.coordinator = coordinator;
+        this.students = students;
     }
 
-    // ✅ Construtor baseado em GroupEntity (substitui convertToDTO)
-    public GroupDTO(GroupEntity entity) {
+    // Construtor usando GroupEntity e entidades resgatadas do banco
+    public GroupDTO(GroupEntity entity, UserEntity coordinator, List<UserEntity> students) {
         this.id = entity.getId();
         this.name = entity.getName();
-        this.availableForProjects = entity.getAvailableForProjects();
-        this.coordinator = new UserDTO(entity.getCoordinator());
-        this.students = entity.getStudents().stream().map(UserDTO::new).collect(Collectors.toList());
+        this.availableForProjects = entity.isAvailableForProjects(); // CORRIGIDO
+        this.coordinator = new UserDTO(coordinator);
+        this.students = students.stream().map(UserDTO::new).toList();
     }
 
     // Getters e Setters
