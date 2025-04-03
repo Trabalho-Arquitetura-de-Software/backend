@@ -21,7 +21,7 @@ type UserDTO {
 }
 
 type GroupDTO {
-    id: ID
+    id: ID!
     name: String!
     availableForProjects: Boolean!
     coordinator: UserDTO!
@@ -30,17 +30,6 @@ type GroupDTO {
 
 type AuthToken {
     token: String!
-}
-
-# ==========================================
-# INPUTS
-# ==========================================
-
-input GroupInput {
-    name: String!
-    availableForProjects: Boolean!
-    coordinatorId: ID!
-    studentIds: [ID!]!
 }
 
 # ==========================================
@@ -53,8 +42,9 @@ type Query {
     findUserById(id: ID!): UserDTO!
     findAllUsers: [UserDTO!]!
 
-    findGroupById(id: ID!): GroupDTO
+    findGroupById(id: ID!): GroupDTO!
     findAllGroups: [GroupDTO!]!
+    findGroupByName(name: String!): GroupDTO!
 }
 
 # ==========================================
@@ -79,7 +69,12 @@ type Mutation {
 
     deleteUser(id: ID!): UserDTO!
 
-    saveGroup(input: GroupInput!): GroupDTO!
+    saveGroup(
+        name: String!
+        availableForProjects: Boolean!
+        coordinatorId: ID!
+        studentIds: [ID!]!
+    ): GroupDTO!
 
     updateGroup(
         id: ID!
