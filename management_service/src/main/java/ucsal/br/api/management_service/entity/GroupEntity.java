@@ -1,13 +1,12 @@
 package ucsal.br.api.management_service.entity;
 
 import jakarta.persistence.*;
-import ucsal.br.api.management_service.dto.GroupDTO;
 
 import java.util.List;
 import java.util.UUID;
 
 @Entity
-@Table(name = "GROUPS")
+@Table(name = "groups")
 public class GroupEntity {
 
     @Id
@@ -20,45 +19,22 @@ public class GroupEntity {
     @Column(nullable = false)
     private boolean availableForProjects;
 
-    @OneToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "coordinator_id")
-    private UserEntity coordinator;
+    @Column(name = "coordinator_id", nullable = false)
+    private UUID coordinatorId;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    @JoinTable(
-            name = "group_students",
-            joinColumns = @JoinColumn(name = "group_id"),
-            inverseJoinColumns = @JoinColumn(name = "student_id")
-    )
-    private List<UserEntity> students;
+    @ElementCollection
+    @CollectionTable(name = "group_students", joinColumns = @JoinColumn(name = "group_id"))
+    @Column(name = "student_id")
+    private List<UUID> studentsIds;
 
     public GroupEntity() {}
 
-    public GroupEntity(UUID id, String name, boolean availableForProjects, UserEntity coordinator, List<UserEntity> students) {
-        this.id = id;
+    public GroupEntity(String name, boolean availableForProjects, UUID coordinatorId, List<UUID> studentsIds) {
         this.name = name;
         this.availableForProjects = availableForProjects;
-        this.coordinator = coordinator;
-        this.students = students;
+        this.coordinatorId = coordinatorId;
+        this.studentsIds = studentsIds;
     }
-
-    public GroupEntity(String name, boolean availableForProjects, UserEntity coordinator, List<UserEntity> students) {
-        this.name = name;
-        this.availableForProjects = availableForProjects;
-        this.coordinator = coordinator;
-        this.students = students;
-    }
-
-    //  Construtor cria a entidade a partir do DTO e dos usuários já buscados do banco
-    public GroupEntity(GroupDTO dto, UserEntity coordinator, List<UserEntity> students) {
-        this.id = dto.getId();
-        this.name = dto.getName();
-        this.availableForProjects = dto.getAvailableForProjects();
-        this.coordinator = coordinator;
-        this.students = students;
-    }
-
-    // Getters e Setters
 
     public UUID getId() {
         return id;
@@ -76,7 +52,7 @@ public class GroupEntity {
         this.name = name;
     }
 
-    public boolean getAvailableForProjects() {
+    public boolean isAvailableForProjects() {
         return availableForProjects;
     }
 
@@ -84,19 +60,19 @@ public class GroupEntity {
         this.availableForProjects = availableForProjects;
     }
 
-    public UserEntity getCoordinator() {
-        return coordinator;
+    public UUID getCoordinatorId() {
+        return coordinatorId;
     }
 
-    public void setCoordinator(UserEntity coordinator) {
-        this.coordinator = coordinator;
+    public void setCoordinatorId(UUID coordinatorId) {
+        this.coordinatorId = coordinatorId;
     }
 
-    public List<UserEntity> getStudents() {
-        return students;
+    public List<UUID> getStudentsIds() {
+        return studentsIds;
     }
 
-    public void setStudents(List<UserEntity> students) {
-        this.students = students;
+    public void setStudentsIds(List<UUID> studentsIds) {
+        this.studentsIds = studentsIds;
     }
 }
