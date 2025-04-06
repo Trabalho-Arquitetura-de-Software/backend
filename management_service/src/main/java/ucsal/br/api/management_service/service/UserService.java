@@ -24,7 +24,7 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public Optional<String> isEmail(String email) {
+    private Optional<String> isEmail(String email) {
         String regex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(email);
@@ -75,7 +75,8 @@ public class UserService {
         }
 
         if (userDTO.getPassword() != null) {
-            userEntity.setPassword(userDTO.getPassword());
+            String encryptedPassword = new BCryptPasswordEncoder().encode(userDTO.getPassword());
+            userEntity.setPassword(encryptedPassword);
         }
 
         if (userDTO.getRole() != null) {

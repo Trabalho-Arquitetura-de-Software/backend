@@ -53,7 +53,7 @@ type Query {
 
 type Mutation {
     saveUser(name: String!, email: String!, password: String!, role: UserRole!): UserDTO!
-    updateUser(id: ID!, name: String, email: String, password: String, role: UserRole): UserDTO!
+    updateUser(id: ID!, name: String!, email: String, password: String, role: UserRole): UserDTO!
     deleteUser(id: ID!): UserDTO!
 
     saveGroup(name: String!, availableForProjects: Boolean!, coordinator: ID!, students: [ID!]!): GroupDTO!
