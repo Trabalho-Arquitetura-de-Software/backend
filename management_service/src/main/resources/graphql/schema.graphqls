@@ -42,9 +42,9 @@ type Query {
     findUserById(id: ID!): UserDTO!
     findAllUsers: [UserDTO!]!
 
-    findGroupById(id: ID!): GroupDTO!
+    findAllGroupsById(id: [ID!]!): [GroupDTO!]!
     findAllGroups: [GroupDTO!]!
-    findGroupByName(name: String!): GroupDTO!
+    findAllGroupsByNameIn(names: [String!]!): [GroupDTO!]!
 }
 
 # ==========================================
@@ -52,46 +52,13 @@ type Query {
 # ==========================================
 
 type Mutation {
-    saveUser(
-        name: String!
-        email: String!
-        password: String!
-        role: UserRole!
-    ): UserDTO!
-
-    updateUser(
-        id: ID!
-        name: String
-        email: String
-        password: String
-        role: UserRole
-    ): UserDTO!
-
+    saveUser(name: String!, email: String!, password: String!, role: UserRole!): UserDTO!
+    updateUser(id: ID!, name: String, email: String, password: String, role: UserRole): UserDTO!
     deleteUser(id: ID!): UserDTO!
 
-    saveGroup(
-        name: String!
-        availableForProjects: Boolean!
-        coordinatorId: ID!
-        studentIds: [ID!]!
-    ): GroupDTO!
-
-    updateGroup(
-        id: ID!
-        name: String
-        availableForProjects: Boolean
-        coordinatorId: ID
-        studentIds: [ID!]
-    ): GroupDTO!
-
+    saveGroup(name: String!, availableForProjects: Boolean!, coordinator: ID!, students: [ID!]!): GroupDTO!
+    updateGroup(id: ID!, name: String, availableForProjects: Boolean, coordinator: ID, students: [ID!]): GroupDTO!
     deleteGroup(id: ID!): GroupDTO!
 
     login(email: String!, password: String!): AuthToken!
-
-    register(
-        name: String!
-        email: String!
-        password: String!
-        role: UserRole!
-    ): UserDTO!
 }

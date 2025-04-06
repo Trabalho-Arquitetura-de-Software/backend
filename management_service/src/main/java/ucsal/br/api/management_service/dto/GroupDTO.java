@@ -1,10 +1,10 @@
 package ucsal.br.api.management_service.dto;
 
 import ucsal.br.api.management_service.entity.GroupEntity;
-import ucsal.br.api.management_service.entity.UserEntity;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class GroupDTO {
 
@@ -16,11 +16,33 @@ public class GroupDTO {
 
     public GroupDTO() {}
 
-    public GroupDTO(String name, Boolean availableForProjects, UserDTO coordinator, List<UserDTO> students) {
+    public GroupDTO(String name, Boolean availableForProjects, UUID coordinator, List<UUID> students) {
         this.name = name;
         this.availableForProjects = availableForProjects;
-        this.coordinator = coordinator;
-        this.students = students;
+
+        this.coordinator = new UserDTO();
+        this.coordinator.setId(coordinator);
+
+        this.students = students.stream().map(uuid -> {
+            UserDTO student = new UserDTO();
+            student.setId(uuid);
+            return student;
+        }).collect(Collectors.toList());
+    }
+
+    public GroupDTO(UUID id, String name, Boolean availableForProjects, UUID coordinator, List<UUID> students) {
+        this.id = id;
+        this.name = name;
+        this.availableForProjects = availableForProjects;
+
+        this.coordinator = new UserDTO();
+        this.coordinator.setId(coordinator);
+
+        this.students = students.stream().map(uuid -> {
+            UserDTO student = new UserDTO();
+            student.setId(uuid);
+            return student;
+        }).collect(Collectors.toList());
     }
 
     public GroupDTO(UUID id, String name, Boolean availableForProjects, UserDTO coordinator, List<UserDTO> students) {
@@ -31,16 +53,22 @@ public class GroupDTO {
         this.students = students;
     }
 
-    // Construtor usando GroupEntity e entidades resgatadas do banco
-    public GroupDTO(GroupEntity entity, UserEntity coordinator, List<UserEntity> students) {
-        this.id = entity.getId();
-        this.name = entity.getName();
-        this.availableForProjects = entity.isAvailableForProjects(); // CORRIGIDO
-        this.coordinator = new UserDTO(coordinator);
-        this.students = students.stream().map(UserDTO::new).toList();
-    }
+    public GroupDTO(GroupEntity groupEntity) {
+        this.id = groupEntity.getId();
+        this.name = groupEntity.getName();
+        this.availableForProjects = groupEntity.isAvailableForProjects();
 
-    // Getters e Setters
+        this.coordinator = new UserDTO();
+        this.coordinator.setId(groupEntity.getCoordinator());
+
+        this.students = groupEntity.getStudents().stream()
+                .map(uuid -> {
+                    UserDTO student = new UserDTO();
+                    student.setId(uuid);
+                    return student;
+                })
+                .collect(Collectors.toList());
+    }
 
     public UUID getId() {
         return id;

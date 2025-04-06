@@ -1,9 +1,12 @@
 package ucsal.br.api.management_service.entity;
 
 import jakarta.persistence.*;
+import ucsal.br.api.management_service.dto.GroupDTO;
+import ucsal.br.api.management_service.dto.UserDTO;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "groups")
@@ -20,20 +23,28 @@ public class GroupEntity {
     private boolean availableForProjects;
 
     @Column(name = "coordinator_id", nullable = false)
-    private UUID coordinatorId;
+    private UUID coordinator;
 
     @ElementCollection
     @CollectionTable(name = "group_students", joinColumns = @JoinColumn(name = "group_id"))
     @Column(name = "student_id")
-    private List<UUID> studentsIds;
+    private List<UUID> students;
 
     public GroupEntity() {}
 
-    public GroupEntity(String name, boolean availableForProjects, UUID coordinatorId, List<UUID> studentsIds) {
+    public GroupEntity(String name, boolean availableForProjects, UUID coordinator, List<UUID> students) {
         this.name = name;
         this.availableForProjects = availableForProjects;
-        this.coordinatorId = coordinatorId;
-        this.studentsIds = studentsIds;
+        this.coordinator = coordinator;
+        this.students = students;
+    }
+
+    public GroupEntity(GroupDTO groupDTO) {
+        this.id = groupDTO.getId();
+        this.name = groupDTO.getName();
+        this.availableForProjects = groupDTO.getAvailableForProjects();
+        this.coordinator = groupDTO.getCoordinator().getId();
+        this.students = groupDTO.getStudents().stream().map(UserDTO::getId).collect(Collectors.toList());
     }
 
     public UUID getId() {
@@ -60,19 +71,19 @@ public class GroupEntity {
         this.availableForProjects = availableForProjects;
     }
 
-    public UUID getCoordinatorId() {
-        return coordinatorId;
+    public UUID getCoordinator() {
+        return coordinator;
     }
 
-    public void setCoordinatorId(UUID coordinatorId) {
-        this.coordinatorId = coordinatorId;
+    public void setCoordinator(UUID coordinator) {
+        this.coordinator = coordinator;
     }
 
-    public List<UUID> getStudentsIds() {
-        return studentsIds;
+    public List<UUID> getStudents() {
+        return students;
     }
 
-    public void setStudentsIds(List<UUID> studentsIds) {
-        this.studentsIds = studentsIds;
+    public void setStudents(List<UUID> students) {
+        this.students = students;
     }
 }
