@@ -101,13 +101,17 @@ public class UserService {
         UserEntity user = userRepository.findByEmail(email);
         if (user == null)
             throw new UserNotFoundException("User not found");
-        String encryptedPassword = new BCryptPasswordEncoder().encode(password);
-        if (encryptedPassword.equals(user.getPassword())) {
-            String encryptedNewPassword = new BCryptPasswordEncoder().encode(newPassword);
+
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+
+        if (encoder.matches(password, user.getPassword())) {
+            String encryptedNewPassword = encoder.encode(newPassword);
             user.setPassword(encryptedNewPassword);
             userRepository.save(user);
             return true;
         }
+
         throw new IncorrectPasswordException("Incorrect Password");
     }
+
 }
