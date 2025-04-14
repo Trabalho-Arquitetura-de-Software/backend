@@ -1,5 +1,3 @@
-scalar Date
-
 # ==========================================
 # ENUMS
 # ==========================================
@@ -44,7 +42,7 @@ type ProjectDTO {
     objective: String!
     summaryScope: String!
     targetAudience: String!
-    expectedStartDate: Date!
+    expectedStartDate: String!
     status: ProjectStatus!
     requester: UserDTO!
     group: GroupDTO!
@@ -84,7 +82,7 @@ type Mutation {
     updateGroup(id: ID!, name: String, availableForProjects: Boolean, coordinator: ID, students: [ID!]): GroupDTO!
     deleteGroup(id: ID!): GroupDTO!
 
-    saveProject(name: String!, objective: String!, summaryScope: String!, targetAudience: String!, expectedStartDate: Date!, status: ProjectStatus!, requester: ID!, group: ID!): ProjectDTO!
+    saveProject(name: String!, objective: String!, summaryScope: String!, targetAudience: String!, expectedStartDate: String!, status: ProjectStatus!, requester: ID!, group: ID!): ProjectDTO!
 
     login(email: String!, password: String!): AuthToken!
     changePassword(email: String!, password: String!, newPassword: String!): Boolean!
