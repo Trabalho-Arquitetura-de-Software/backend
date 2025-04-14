@@ -4,6 +4,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.core.annotation.Order;
 import ucsal.br.api.management_service.dto.GroupDTO;
 import ucsal.br.api.management_service.dto.UserDTO;
 import ucsal.br.api.management_service.service.GroupService;
@@ -23,6 +24,7 @@ public class ManagementServiceApplication {
     }
 
     @Bean
+    @Order(1)
     CommandLineRunner createAdminUser(UserService userService) {
         return args -> {
             String adminEmail = "admin@test.com";
@@ -46,6 +48,7 @@ public class ManagementServiceApplication {
     }
 
     @Bean
+    @Order(2)
     CommandLineRunner createProfessorUser(UserService userService) {
         return args -> {
             String professorEmail = "professor@test.com";
@@ -70,6 +73,7 @@ public class ManagementServiceApplication {
     }
 
     @Bean
+    @Order(3)
     CommandLineRunner createStudentsUser(UserService userService) {
         return args -> {
             String student01Email = "student01@test.com";
@@ -129,6 +133,7 @@ public class ManagementServiceApplication {
     }
 
     @Bean
+    @Order(4)
     CommandLineRunner createGroup(GroupService groupService, UserService userService) {
         return args -> {
             String groupName = "group1";
