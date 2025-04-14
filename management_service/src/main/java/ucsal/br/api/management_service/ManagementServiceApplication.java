@@ -174,39 +174,4 @@ public class ManagementServiceApplication {
             }
         };
     }
-
-    @Bean
-    @Order(5)
-    CommandLineRunner createProjects(ProjectService projectService, UserService userService, GroupService groupService) {
-        return args -> {
-            try {
-                UserDTO requester = userService.findUserByEmail("student01@test.com");
-                GroupDTO group = groupService.findGroupByName("group1");
-
-                ProjectDTO project1 = getProjectDTO(requester, group);
-
-                projectService.saveProject(project1);
-                System.out.println("✅ Projeto 'Sistema de Gestão Escolar' criado com sucesso!");
-            } catch (ProjectAlredyExistsException e) {
-                System.out.println("⚠️ Projeto já existe, ignorando criação.");
-            } catch (Exception e) {
-                System.out.println("❌ Erro ao criar projeto: " + e.getMessage());
-            }
-        };
-    }
-
-    private static ProjectDTO getProjectDTO(UserDTO requester, GroupDTO group) {
-        ProjectDTO project1 = new ProjectDTO();
-        project1.setName("Sistema de Gestão Escolar");
-        project1.setObjective("Desenvolver um sistema para gerenciar alunos, professores e turmas.");
-        project1.setSummaryScope("Criação de funcionalidades para matrícula, notas e presença.");
-        project1.setTargetAudience("Instituições de ensino fundamental e médio.");
-        project1.setExpectedStartDate(LocalDate.of(2025, 4, 15));
-        project1.setStatus(ProjectStatus.IN_PROGRESS);
-        project1.setRequester(requester);
-        project1.setGroup(group);
-        return project1;
-    }
-
-
 }
