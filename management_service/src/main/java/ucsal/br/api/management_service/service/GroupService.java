@@ -1,6 +1,5 @@
 package ucsal.br.api.management_service.service;
 
-import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.stereotype.Service;
 import ucsal.br.api.management_service.dto.GroupDTO;
 import ucsal.br.api.management_service.dto.UserDTO;
@@ -94,7 +93,7 @@ public class GroupService {
     public List<GroupDTO> findAllGroups() {
         List<GroupEntity> groupEntities = groupRepository.findAll();
 
-        return getGroupDtos(groupEntities);
+        return groupEntities.stream().map(this::getGroupDto).collect(Collectors.toList());
     }
 
     public List<GroupDTO> findAllGroupsById(List<UUID> id) {

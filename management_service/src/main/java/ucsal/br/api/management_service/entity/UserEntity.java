@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity
-@Table(name = "USERS")
+@Table(name = "users")
 public class UserEntity implements UserDetails {
 
     @Id

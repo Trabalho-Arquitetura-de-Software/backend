@@ -13,6 +13,8 @@ import java.util.stream.Collectors;
 public class GroupEntity {
 
     @Id
+    @PrimaryKeyJoinColumn
+    @Column(unique = true)
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
