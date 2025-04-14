@@ -1,17 +1,25 @@
 package ucsal.br.api.management_service;
 
+import org.apache.catalina.User;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.core.annotation.Order;
 import ucsal.br.api.management_service.dto.GroupDTO;
+import ucsal.br.api.management_service.dto.ProjectDTO;
 import ucsal.br.api.management_service.dto.UserDTO;
 import ucsal.br.api.management_service.service.GroupService;
+import ucsal.br.api.management_service.service.ProjectService;
 import ucsal.br.api.management_service.service.UserService;
 import ucsal.br.api.management_service.utils.exception.GroupAlredyExistsException;
+import ucsal.br.api.management_service.utils.exception.GroupNotFoundException;
+import ucsal.br.api.management_service.utils.exception.ProjectAlredyExistsException;
 import ucsal.br.api.management_service.utils.exception.UserAlredyExistsException;
+import ucsal.br.api.management_service.utils.type.ProjectStatus;
 import ucsal.br.api.management_service.utils.type.UserRole;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +31,7 @@ public class ManagementServiceApplication {
     }
 
     @Bean
+    @Order(1)
     CommandLineRunner createAdminUser(UserService userService) {
         return args -> {
             String adminEmail = "admin@test.com";
@@ -46,6 +55,7 @@ public class ManagementServiceApplication {
     }
 
     @Bean
+    @Order(2)
     CommandLineRunner createProfessorUser(UserService userService) {
         return args -> {
             String professorEmail = "professor@test.com";
@@ -70,6 +80,7 @@ public class ManagementServiceApplication {
     }
 
     @Bean
+    @Order(3)
     CommandLineRunner createStudentsUser(UserService userService) {
         return args -> {
             String student01Email = "student01@test.com";
@@ -129,6 +140,7 @@ public class ManagementServiceApplication {
     }
 
     @Bean
+    @Order(4)
     CommandLineRunner createGroup(GroupService groupService, UserService userService) {
         return args -> {
             String groupName = "group1";
@@ -162,5 +174,39 @@ public class ManagementServiceApplication {
             }
         };
     }
+
+    @Bean
+    @Order(5)
+    CommandLineRunner createProjects(ProjectService projectService, UserService userService, GroupService groupService) {
+        return args -> {
+            try {
+                UserDTO requester = userService.findUserByEmail("student01@test.com");
+                GroupDTO group = groupService.findGroupByName("group1");
+
+                ProjectDTO project1 = getProjectDTO(requester, group);
+
+                projectService.saveProject(project1);
+                System.out.println("✅ Projeto 'Sistema de Gestão Escolar' criado com sucesso!");
+            } catch (ProjectAlredyExistsException e) {
+                System.out.println("⚠️ Projeto já existe, ignorando criação.");
+            } catch (Exception e) {
+                System.out.println("❌ Erro ao criar projeto: " + e.getMessage());
+            }
+        };
+    }
+
+    private static ProjectDTO getProjectDTO(UserDTO requester, GroupDTO group) {
+        ProjectDTO project1 = new ProjectDTO();
+        project1.setName("Sistema de Gestão Escolar");
+        project1.setObjective("Desenvolver um sistema para gerenciar alunos, professores e turmas.");
+        project1.setSummaryScope("Criação de funcionalidades para matrícula, notas e presença.");
+        project1.setTargetAudience("Instituições de ensino fundamental e médio.");
+        project1.setExpectedStartDate(LocalDate.of(2025, 4, 15));
+        project1.setStatus(ProjectStatus.IN_PROGRESS);
+        project1.setRequester(requester);
+        project1.setGroup(group);
+        return project1;
+    }
+
 
 }

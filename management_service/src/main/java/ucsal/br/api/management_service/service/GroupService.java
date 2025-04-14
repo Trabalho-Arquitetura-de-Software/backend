@@ -1,5 +1,6 @@
 package ucsal.br.api.management_service.service;
 
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import ucsal.br.api.management_service.dto.GroupDTO;
 import ucsal.br.api.management_service.dto.UserDTO;
@@ -7,6 +8,7 @@ import ucsal.br.api.management_service.entity.GroupEntity;
 import ucsal.br.api.management_service.entity.UserEntity;
 import ucsal.br.api.management_service.repository.IGroupRepository;
 import ucsal.br.api.management_service.repository.IUserRepository;
+import ucsal.br.api.management_service.utils.exception.GroupAlredyExistsException;
 import ucsal.br.api.management_service.utils.exception.GroupNotFoundException;
 import ucsal.br.api.management_service.utils.exception.UserNotFoundException;
 
@@ -29,7 +31,7 @@ public class GroupService {
         return userRepository.findAllById(allUserIds);
     }
 
-    private List<GroupDTO> getGroupDtos(List<GroupEntity> groupEntities) {
+    protected List<GroupDTO> getGroupDtos(List<GroupEntity> groupEntities) {
         Map<UUID, UserDTO> userDtoMap = DataLoader(groupEntities).stream()
                 .collect(Collectors.toMap(UserEntity::getId, UserDTO::new));
 
@@ -108,10 +110,21 @@ public class GroupService {
         return getGroupDtos(group);
     }
 
+    public GroupDTO findGroupByName(String groupName) {
+        GroupEntity group = groupRepository.findByName(groupName);
+        return getGroupDto(group);
+    }
+
     public GroupDTO saveGroup(GroupDTO groupDTO) {
         if (userRepository.findById(groupDTO.getCoordinator().getId()).isEmpty())
             throw new UserNotFoundException("Coordinator not found for group " + groupDTO.getCoordinator());
 
+        List<String> names = new ArrayList<>();
+        names.add(groupDTO.getName());
+        Optional<GroupEntity> existingGroup = groupRepository.findAllByNameIn(names).stream().findFirst();
+        if (existingGroup.isPresent()) {
+            throw new GroupAlredyExistsException("Group with name " + groupDTO.getName() + " already exists.");
+        }
         List<UserEntity> students = userRepository.findAllById(
                 groupDTO.getStudents().stream()
                         .map(UserDTO::getId)
