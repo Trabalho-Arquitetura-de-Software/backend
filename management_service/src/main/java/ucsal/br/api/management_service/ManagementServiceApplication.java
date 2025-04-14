@@ -134,20 +134,23 @@ public class ManagementServiceApplication {
             String groupName = "group1";
 
             String coordinatorEmail = "professor@test.com";
+
             String student01Email = "student01@test.com";
             String student02Email = "student02@test.com";
             String student03Email = "student03@test.com";
+
+            UserDTO coordinator = userService.findUserByEmail(coordinatorEmail);
+
             List<UserDTO> students = new ArrayList<>();
+            students.add(userService.findUserByEmail(student01Email));
+            students.add(userService.findUserByEmail(student02Email));
+            students.add(userService.findUserByEmail(student03Email));
 
             try {
                 GroupDTO group = new GroupDTO();
                 group.setName(groupName);
                 group.setAvailableForProjects(true);
-                UserDTO coordinator = userService.findUserByEmail(coordinatorEmail);
                 group.setCoordinator(coordinator);
-                students.add(userService.findUserByEmail(student01Email));
-                students.add(userService.findUserByEmail(student02Email));
-                students.add(userService.findUserByEmail(student03Email));
                 group.setStudents(students);
 
                 groupService.saveGroup(group);
