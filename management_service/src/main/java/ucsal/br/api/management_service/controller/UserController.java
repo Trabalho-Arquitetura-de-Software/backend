@@ -84,4 +84,9 @@ public class UserController {
 
         throw new RuntimeException("Erro ao autenticar usuário");
     }
+
+    @MutationMapping
+    public Boolean changePassword(@Argument String email, @Argument String password, @Argument String newPassword) {
+        return userService.changePassword(email, password, newPassword);
+    }
 }

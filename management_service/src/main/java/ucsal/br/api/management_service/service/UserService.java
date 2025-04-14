@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import ucsal.br.api.management_service.dto.UserDTO;
 import ucsal.br.api.management_service.entity.UserEntity;
 import ucsal.br.api.management_service.repository.IUserRepository;
+import ucsal.br.api.management_service.utils.exception.IncorrectPasswordException;
 import ucsal.br.api.management_service.utils.exception.InvalidEmailException;
 import ucsal.br.api.management_service.utils.exception.UserAlredyExistsException;
 import ucsal.br.api.management_service.utils.exception.UserNotFoundException;
@@ -94,5 +95,19 @@ public class UserService {
         } else {
             return null;
         }
+    }
+
+    public Boolean changePassword(String email, String password, String newPassword) {
+        UserEntity user = userRepository.findByEmail(email);
+        if (user == null)
+            throw new UserNotFoundException("User not found");
+        String encryptedPassword = new BCryptPasswordEncoder().encode(password);
+        if (encryptedPassword.equals(user.getPassword())) {
+            String encryptedNewPassword = new BCryptPasswordEncoder().encode(newPassword);
+            user.setPassword(encryptedNewPassword);
+            userRepository.save(user);
+            return true;
+        }
+        throw new IncorrectPasswordException("Incorrect Password");
     }
 }
