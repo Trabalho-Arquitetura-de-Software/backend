@@ -8,4 +8,5 @@ import java.util.UUID;
 
 @Repository
 public interface IProjectRepository extends JpaRepository<ProjectEntity, UUID> {
+    ProjectEntity findByName(String name);
 }

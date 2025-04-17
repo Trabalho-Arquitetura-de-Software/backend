@@ -1,14 +1,17 @@
 package ucsal.br.api.management_service.service;
 
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import ucsal.br.api.management_service.dto.GroupDTO;
 import ucsal.br.api.management_service.dto.ProjectDTO;
 import ucsal.br.api.management_service.dto.UserDTO;
+import ucsal.br.api.management_service.entity.GroupEntity;
 import ucsal.br.api.management_service.entity.ProjectEntity;
 import ucsal.br.api.management_service.repository.IGroupRepository;
 import ucsal.br.api.management_service.repository.IProjectRepository;
 import ucsal.br.api.management_service.repository.IUserRepository;
 import ucsal.br.api.management_service.utils.exception.GroupNotFoundException;
+import ucsal.br.api.management_service.utils.exception.ProjectAlredyExistsException;
 import ucsal.br.api.management_service.utils.exception.UserNotFoundException;
 
 import java.util.List;
@@ -29,7 +32,15 @@ public class ProjectService {
 
     private ProjectDTO createProjectDTO(ProjectEntity projectEntity) {
         UserDTO userDTO = new UserDTO(userRepository.findById(projectEntity.getRequester()).orElseThrow(() -> new UserNotFoundException("User Not Found")));
-        GroupDTO groupDTO = new GroupDTO(groupRepository.findById(projectEntity.getGroup()).orElseThrow(() -> new GroupNotFoundException("Group Not Found")));
+
+        GroupEntity group = groupRepository.findById(projectEntity.getGroup()).orElseThrow(() -> new GroupNotFoundException("Group Not Found"));
+        GroupDTO groupDTO = new GroupDTO(
+                group.getId(),
+                group.getName(),
+                group.isAvailableForProjects(),
+                new UserDTO(userRepository.findById(group.getCoordinator()).orElseThrow(() -> new UserNotFoundException("Coordinator Not Found"))),
+                userRepository.findAllById(group.getStudents()).stream().map(UserDTO::new).collect(Collectors.toList())
+        );
 
         return new ProjectDTO(projectEntity.getId(), projectEntity.getName(), projectEntity.getObjective(), projectEntity.getSummaryScope(), projectEntity.getTargetAudience(), projectEntity.getExpectedStartDate(), projectEntity.getStatus(), userDTO, groupDTO);
     }
@@ -46,6 +57,10 @@ public class ProjectService {
 
         if (groupRepository.findById(projectDTO.getGroup().getId()).isEmpty())
             throw new GroupNotFoundException("Group not found");
+
+        if (projectRepository.findByName(projectDTO.getName()) != null)
+            throw new ProjectAlredyExistsException("Project Already Exists");
+
 
         ProjectEntity projectEntity = new ProjectEntity(projectDTO);
         projectEntity = projectRepository.save(projectEntity);

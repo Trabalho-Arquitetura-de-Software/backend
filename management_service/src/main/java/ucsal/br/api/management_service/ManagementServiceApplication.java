@@ -1,18 +1,25 @@
 package ucsal.br.api.management_service;
 
+import org.apache.catalina.User;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.annotation.Order;
 import ucsal.br.api.management_service.dto.GroupDTO;
+import ucsal.br.api.management_service.dto.ProjectDTO;
 import ucsal.br.api.management_service.dto.UserDTO;
 import ucsal.br.api.management_service.service.GroupService;
+import ucsal.br.api.management_service.service.ProjectService;
 import ucsal.br.api.management_service.service.UserService;
 import ucsal.br.api.management_service.utils.exception.GroupAlredyExistsException;
+import ucsal.br.api.management_service.utils.exception.GroupNotFoundException;
+import ucsal.br.api.management_service.utils.exception.ProjectAlredyExistsException;
 import ucsal.br.api.management_service.utils.exception.UserAlredyExistsException;
+import ucsal.br.api.management_service.utils.type.ProjectStatus;
 import ucsal.br.api.management_service.utils.type.UserRole;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -167,5 +174,4 @@ public class ManagementServiceApplication {
             }
         };
     }
-
 }

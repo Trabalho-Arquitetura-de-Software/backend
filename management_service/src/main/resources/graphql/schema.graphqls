@@ -1,3 +1,5 @@
+scalar Date
+
 # ==========================================
 # ENUMS
 # ==========================================
@@ -23,29 +25,29 @@ enum ProjectStatus{
 type UserDTO {
     id: ID!
     name: String
-    email: String!
-    password: String!
-    role: UserRole!
+    email: String
+    password: String
+    role: UserRole
 }
 
 type GroupDTO {
     id: ID!
-    name: String!
-    availableForProjects: Boolean!
-    coordinator: UserDTO!
-    students: [UserDTO!]!
+    name: String
+    availableForProjects: Boolean
+    coordinator: UserDTO
+    students: [UserDTO!]
 }
 
 type ProjectDTO {
     id: ID!
-    name: String!
-    objective: String!
-    summaryScope: String!
-    targetAudience: String!
-    expectedStartDate: String!
-    status: ProjectStatus!
-    requester: UserDTO!
-    group: GroupDTO!
+    name: String
+    objective: String
+    summaryScope: String
+    targetAudience: String
+    expectedStartDate: Date
+    status: ProjectStatus
+    requester: UserDTO
+    group: GroupDTO
 }
 
 type AuthToken {
@@ -82,7 +84,7 @@ type Mutation {
     updateGroup(id: ID!, name: String, availableForProjects: Boolean, coordinator: ID, students: [ID!]): GroupDTO!
     deleteGroup(id: ID!): GroupDTO!
 
-    saveProject(name: String!, objective: String!, summaryScope: String!, targetAudience: String!, expectedStartDate: String!, status: ProjectStatus!, requester: ID!, group: ID!): ProjectDTO!
+    saveProject(name: String!, objective: String!, summaryScope: String!, targetAudience: String!, expectedStartDate: Date!, status: ProjectStatus!, requester: ID!, group: ID!): ProjectDTO!
 
     login(email: String!, password: String!): AuthToken!
     changePassword(email: String!, password: String!, newPassword: String!): Boolean!
