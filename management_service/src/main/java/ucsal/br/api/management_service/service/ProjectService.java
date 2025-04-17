@@ -1,6 +1,5 @@
 package ucsal.br.api.management_service.service;
 
-import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import ucsal.br.api.management_service.dto.GroupDTO;
 import ucsal.br.api.management_service.dto.ProjectDTO;

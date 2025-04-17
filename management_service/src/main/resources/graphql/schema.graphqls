@@ -88,4 +88,6 @@ type Mutation {
 
     login(email: String!, password: String!): AuthToken!
     changePassword(email: String!, password: String!, newPassword: String!): Boolean!
+
+    populateTheDataBase: String!
 }
