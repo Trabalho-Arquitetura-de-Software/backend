@@ -1,19 +1,13 @@
 @startuml
 !theme vibrant
-actor Professor
+actor Administrador
 participant "Frontend" as FE
-participant "ProjectController" as PC
-participant "ProjectService" as PS
+participant "UserController" as UC
+participant "UserService" as US
 participant "UserRepository" as UR
-participant "GroupRepository" as GR
-participant "ProjectRepository" as PR
-participant "NotificacaoService" as NS
 
-Professor -> FE : envia dados do projeto
-FE -> PC : saveProject()
-PC -> PS : saveProject(dto)
-PS -> UR : buscar requester
-PS -> GR : buscar grupo
-PS -> PR : salvar projeto
-PS -> NS : notificar por e-mail
+Administrador -> FE : envia novo usuário
+FE -> UC : saveUser()
+UC -> US : saveUser(dto)
+US -> UR : verifica e salva usuário
 @enduml
