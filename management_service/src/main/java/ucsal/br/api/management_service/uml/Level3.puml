@@ -1,21 +1,70 @@
-
 @startuml
-!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+!theme vibrant
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
 
 LAYOUT_WITH_LEGEND()
 skinparam dpi 150
+scale 1.5
 
-Person(prof, "Professor", "Solicita projetos para desenvolvimento")
-Person(admin, "Administrador", "Gerencia professores, alunos e projetos")
+Container_Boundary(backend_boundary, "Backend (GraphQL)") {
+    ' Projeto
+    Component(projectQuery, "ProjectController.findAllProjects()", "GraphQL Query", "Lista projetos")
+    Component(projectMutation, "ProjectController.saveProject(...)", "GraphQL Mutation", "Salva projeto")
+    Component(projetoService, "ProjectService", "Java Class", "Regras de negócio dos projetos")
+    Component(projetoRepository, "IProjectRepository", "Java Interface", "Persistência")
+    Component(notificacaoService, "NotificacaoService", "Java Class", "Notificações")
 
-System_Boundary(sistema_bd, "Sistema de Controle de Projetos") {
-    Container(frontend, "Frontend Web", "Vite + React", "Interface de usuário acessada via navegador")
-    Container(backend, "Backend (GraphQL)", "Java + Spring Boot + GraphQL + Docker", "Camada lógica e API do sistema")
-    ContainerDb(db, "Banco de Dados", "PostgreSQL", "Armazena dados persistentes")
+    ' Grupo
+    Component(groupQueries, "GroupController.queries", "GraphQL Query", "Consulta grupos")
+    Component(saveGroupMutation, "GroupController.saveGroup(...)", "GraphQL Mutation", "Salva grupo")
+    Component(updateGroupMutation, "GroupController.updateGroup(...)", "GraphQL Mutation", "Atualiza grupo")
+    Component(deleteGroupMutation, "GroupController.deleteGroup(...)", "GraphQL Mutation", "Remove grupo")
+    Component(grupoService, "GroupService", "Java Class", "Lógica dos grupos")
+    Component(grupoRepository, "IGroupRepository", "Java Interface", "Dados de grupo")
+
+    ' Usuário
+    Component(userQueries, "UserController.queries", "GraphQL Query", "Consulta usuários")
+    Component(saveUserMutation, "UserController.saveUser(...)", "GraphQL Mutation", "Cria usuário")
+    Component(updateUserMutation, "UserController.updateUser(...)", "GraphQL Mutation", "Atualiza usuário")
+    Component(deleteUserMutation, "UserController.deleteUser(...)", "GraphQL Mutation", "Remove usuário")
+    Component(changePasswordMutation, "UserController.changePassword(...)", "GraphQL Mutation", "Troca senha")
+    Component(loginMutation, "UserController.login(...)", "GraphQL Mutation", "Login")
+    Component(userService, "UserService", "Java Class", "Lógica de usuário")
+    Component(userRepository, "IUserRepository", "Java Interface", "Dados do usuário")
+    Component(tokenService, "TokenService", "Java Class", "JWT")
+    Component(authService, "AuthService", "Java Class", "Autenticação")
+    Component(securityFilter, "SecurityFilter", "Java Class", "Filtro JWT")
+
+    ' Inicialização
+    Component(dbMutation, "DBController.populateTheDataBase()", "GraphQL Mutation", "Inicializar base")
+    Component(dbService, "DBService", "Java Class", "Popular base")
 }
 
-Rel(prof, frontend, "Acessa via navegador")
-Rel(admin, frontend, "Gerencia pelo sistema")
-Rel(frontend, backend, "Requisições HTTP")
-Rel(backend, db, "Consulta e grava dados", "JDBC")
+' Relacionamentos principais
+Rel(projectQuery, projetoService, "Listar projetos")
+Rel(projectMutation, projetoService, "Salvar projeto")
+Rel(projetoService, projetoRepository, "Gravar projeto")
+Rel(projetoService, userRepository, "Buscar usuário")
+Rel(projetoService, grupoRepository, "Buscar grupo")
+Rel(projetoService, notificacaoService, "Notificar")
+
+Rel(groupQueries, grupoService, "Consultar grupos")
+Rel(saveGroupMutation, grupoService, "Salvar grupo")
+Rel(updateGroupMutation, grupoService, "Atualizar grupo")
+Rel(deleteGroupMutation, grupoService, "Remover grupo")
+Rel(grupoService, grupoRepository, "Acessa dados de grupo")
+Rel(grupoService, userRepository, "Busca coordenadores")
+
+Rel(userQueries, userService, "Consulta")
+Rel(saveUserMutation, userService, "Salva")
+Rel(updateUserMutation, userService, "Atualiza")
+Rel(deleteUserMutation, userService, "Remove")
+Rel(changePasswordMutation, userService, "Troca senha")
+Rel(userService, userRepository, "Acesso a dados")
+Rel(userService, tokenService, "Gera token")
+Rel(loginMutation, tokenService, "Login")
+Rel(authService, userRepository, "Autentica")
+Rel(securityFilter, tokenService, "Valida JWT")
+Rel(securityFilter, userRepository, "Carrega usuário")
+Rel(dbMutation, dbService, "Popular base")
 @enduml
