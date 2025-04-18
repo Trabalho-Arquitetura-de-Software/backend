@@ -1,0 +1,19 @@
+@startuml
+!theme vibrant
+actor Professor
+participant "Frontend" as FE
+participant "ProjectController" as PC
+participant "ProjectService" as PS
+participant "UserRepository" as UR
+participant "GroupRepository" as GR
+participant "ProjectRepository" as PR
+participant "NotificacaoService" as NS
+
+Professor -> FE : envia dados do projeto
+FE -> PC : saveProject()
+PC -> PS : saveProject(dto)
+PS -> UR : buscar requester
+PS -> GR : buscar grupo
+PS -> PR : salvar projeto
+PS -> NS : notificar por e-mail
+@enduml
