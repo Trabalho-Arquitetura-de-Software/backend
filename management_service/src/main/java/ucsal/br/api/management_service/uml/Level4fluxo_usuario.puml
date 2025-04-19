@@ -1,0 +1,13 @@
+@startuml
+!theme vibrant
+actor Administrador
+participant "Frontend" as FE
+participant "UserController" as UC
+participant "UserService" as US
+participant "UserRepository" as UR
+
+Administrador -> FE : envia novo usuário
+FE -> UC : saveUser()
+UC -> US : saveUser(dto)
+US -> UR : verifica e salva usuário
+@enduml

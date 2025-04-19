@@ -1,0 +1,12 @@
+@startuml
+!theme vibrant
+actor Navegador
+participant "SecurityFilter" as SF
+participant "TokenService" as TS
+participant "UserRepository" as UR
+
+Navegador -> SF : envia token JWT
+SF -> TS : validateToken(token)
+TS -> TS : valida assinatura
+SF -> UR : findByEmail(email)
+@enduml

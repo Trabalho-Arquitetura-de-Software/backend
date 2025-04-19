@@ -1,0 +1,12 @@
+@startuml
+!theme vibrant
+actor Usuario
+participant "Frontend" as FE
+participant "UserController" as UC
+participant "TokenService" as TS
+
+Usuario -> FE : envia email/senha
+FE -> UC : login()
+UC -> TS : generateToken(user)
+TS -> TS : cria token JWT
+@enduml

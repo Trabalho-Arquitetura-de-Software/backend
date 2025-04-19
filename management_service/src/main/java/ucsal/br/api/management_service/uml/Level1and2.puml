@@ -1,0 +1,20 @@
+@startuml
+!includeurl https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+LAYOUT_WITH_LEGEND()
+skinparam dpi 150
+
+Person(prof, "Professor", "Solicita projetos para desenvolvimento")
+Person(admin, "Administrador", "Gerencia professores, alunos e projetos")
+
+System_Boundary(sistema_bd, "Sistema de Controle de Projetos") {
+    Container(frontend, "Frontend Web", "Vite + React", "Interface de usuário acessada via navegador")
+    Container(backend, "Backend (GraphQL)", "Java + Spring Boot + GraphQL + Docker", "Camada lógica e API do sistema")
+    ContainerDb(db, "Banco de Dados", "PostgreSQL", "Armazena dados persistentes")
+}
+
+Rel(prof, frontend, "Acessa via navegador")
+Rel(admin, frontend, "Gerencia pelo sistema")
+Rel(frontend, backend, "Requisições HTTP")
+Rel(backend, db, "Consulta e grava dados", "JDBC")
+@enduml

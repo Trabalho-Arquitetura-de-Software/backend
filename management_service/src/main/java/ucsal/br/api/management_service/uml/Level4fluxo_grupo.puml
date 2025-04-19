@@ -1,0 +1,16 @@
+@startuml
+!theme vibrant
+actor Administrador
+participant "Frontend" as FE
+participant "GroupController" as GC
+participant "GroupService" as GS
+participant "UserRepository" as UR
+participant "GroupRepository" as GR
+
+Administrador -> FE : envia dados do grupo
+FE -> GC : saveGroup()
+GC -> GS : saveGroup(dto)
+GS -> GR : verifica grupo por nome
+GS -> UR : busca coordenador e alunos
+GS -> GR : salva grupo
+@enduml
