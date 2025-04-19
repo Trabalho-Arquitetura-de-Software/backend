@@ -11,6 +11,7 @@ import ucsal.br.api.management_service.repository.IProjectRepository;
 import ucsal.br.api.management_service.repository.IUserRepository;
 import ucsal.br.api.management_service.utils.exception.GroupNotFoundException;
 import ucsal.br.api.management_service.utils.exception.ProjectAlredyExistsException;
+import ucsal.br.api.management_service.utils.exception.ProjectNotFoundException;
 import ucsal.br.api.management_service.utils.exception.UserNotFoundException;
 
 import java.util.List;
@@ -65,5 +66,38 @@ public class ProjectService {
         projectEntity = projectRepository.save(projectEntity);
 
         return createProjectDTO(projectEntity);
+    }
+
+    public ProjectDTO updateProject(ProjectDTO projectDTO) {
+        ProjectEntity projectEntity = projectRepository.findById(projectDTO.getId()).orElseThrow(() -> new ProjectNotFoundException("Project Not Found"));
+
+        if (projectDTO.getId() != null) {
+            projectEntity.setId(projectDTO.getId());
+        }
+        if (projectDTO.getName() != null) {
+            projectEntity.setName(projectDTO.getName());
+        }
+        if (projectDTO.getObjective() != null) {
+            projectEntity.setObjective(projectDTO.getObjective());
+        }
+        if (projectDTO.getSummaryScope() != null) {
+            projectEntity.setSummaryScope(projectDTO.getSummaryScope());
+        }
+        if (projectDTO.getTargetAudience() != null) {
+            projectEntity.setTargetAudience(projectDTO.getTargetAudience());
+        }
+        if (projectDTO.getExpectedStartDate() != null) {
+            projectEntity.setExpectedStartDate(projectDTO.getExpectedStartDate());
+        }
+        if (projectDTO.getStatus() != null) {
+            projectEntity.setStatus(projectDTO.getStatus());
+        }
+        if (projectDTO.getRequester().getId() != null) {
+            projectEntity.setRequester(projectDTO.getRequester().getId());
+        }
+        if (projectDTO.getGroup().getId() != null) {
+            projectEntity.setGroup(projectDTO.getGroup().getId());
+        }
+        return createProjectDTO(projectRepository.save(projectEntity));
     }
 }

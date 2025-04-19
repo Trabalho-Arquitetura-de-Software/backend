@@ -3,6 +3,7 @@ package ucsal.br.api.management_service.controller;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import ucsal.br.api.management_service.dto.ProjectDTO;
 import ucsal.br.api.management_service.service.ProjectService;
@@ -21,11 +22,13 @@ public class ProjectController {
         this.projectService = projectService;
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @QueryMapping
     public List<ProjectDTO> findAllProjects() {
         return projectService.findAllProjects();
     }
 
+    @PreAuthorize("hasRole('PROFESSOR')")
     @MutationMapping
     public ProjectDTO saveProject(
             @Argument String name,
@@ -49,4 +52,29 @@ public class ProjectController {
         ));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
+    @MutationMapping
+    public ProjectDTO updateProject(
+            @Argument UUID id,
+            @Argument String name,
+            @Argument String objective,
+            @Argument String summaryScope,
+            @Argument String targetAudience,
+            @Argument LocalDate expectedStartDate,
+            @Argument ProjectStatus status,
+            @Argument UUID requester,
+            @Argument UUID group)
+    {
+        return projectService.updateProject(new ProjectDTO(
+                id,
+                name,
+                objective,
+                summaryScope,
+                targetAudience,
+                expectedStartDate,
+                status,
+                requester,
+                group
+        ));
+    }
 }
