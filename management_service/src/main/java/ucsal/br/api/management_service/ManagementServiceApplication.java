@@ -25,6 +25,7 @@ public class ManagementServiceApplication {
             try {
                 UserDTO adminUser = new UserDTO();
                 adminUser.setName("admin");
+                adminUser.setAffiliatedSchool("Software Engineer");
                 adminUser.setEmail(adminEmail);
                 adminUser.setPassword(adminPassword);
                 adminUser.setRole(UserRole.ADMIN);

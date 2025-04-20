@@ -28,6 +28,9 @@ public class UserEntity implements UserDetails {
     private String email;
 
     @Column(nullable = false)
+    private String affiliatedSchool;
+
+    @Column(nullable = false)
     private String password;
 
     @Column(nullable = false)
@@ -36,16 +39,18 @@ public class UserEntity implements UserDetails {
     public UserEntity() {
     }
 
-    public UserEntity(UUID id, String name, String email, String password, UserRole role) {
+    public UserEntity(UUID id, String name, String affiliatedSchool, String email, String password, UserRole role) {
         this.id = id;
         this.name = name;
+        this.affiliatedSchool = affiliatedSchool;
         this.email = email;
         this.password = password;
         this.role = role;
     }
 
-    public UserEntity(String name, String email, String password, UserRole role) {
+    public UserEntity(String name, String affiliatedSchool, String email, String password, UserRole role) {
         this.name = name;
+        this.affiliatedSchool = affiliatedSchool;
         this.email = email;
         this.password = password;
         this.role = role;
@@ -54,6 +59,7 @@ public class UserEntity implements UserDetails {
     public UserEntity(UserDTO userDTO) {
         this.id = userDTO.getId();
         this.name = userDTO.getName();
+        this.affiliatedSchool = userDTO.getAffiliatedSchool();
         this.email = userDTO.getEmail();
         this.password = userDTO.getPassword();
         this.role = userDTO.getRole();
@@ -96,6 +102,14 @@ public class UserEntity implements UserDetails {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getAffiliatedSchool() {
+        return affiliatedSchool;
+    }
+
+    public void setAffiliatedSchool(String affiliatedSchool) {
+        this.affiliatedSchool = affiliatedSchool;
     }
 
     public String getEmail() {

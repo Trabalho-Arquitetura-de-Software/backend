@@ -25,6 +25,7 @@ enum ProjectStatus{
 type UserDTO {
     id: ID!
     name: String
+    affiliatedSchool: String,
     email: String
     password: String
     role: UserRole
@@ -76,15 +77,16 @@ type Query {
 # ==========================================
 
 type Mutation {
-    saveUser(name: String!, email: String!, password: String!, role: UserRole!): UserDTO!
-    updateUser(id: ID!, name: String!, email: String, password: String, role: UserRole): UserDTO!
+    saveUser(name: String!, affiliatedSchool: String!, email: String!, password: String!, role: UserRole!): UserDTO!
+    updateUser(id: ID!, name: String, affiliatedSchool: String, email: String, password: String, role: UserRole): UserDTO!
     deleteUser(id: ID!): UserDTO!
 
     saveGroup(name: String!, availableForProjects: Boolean!, coordinator: ID!, students: [ID!]!): GroupDTO!
     updateGroup(id: ID!, name: String, availableForProjects: Boolean, coordinator: ID, students: [ID!]): GroupDTO!
     deleteGroup(id: ID!): GroupDTO!
 
-    saveProject(name: String!, objective: String!, summaryScope: String!, targetAudience: String!, expectedStartDate: Date!, status: ProjectStatus!, requester: ID!, group: ID!): ProjectDTO!
+    saveProject(name: String!, objective: String!, summaryScope: String!, targetAudience: String!, expectedStartDate: Date!, requester: ID!): ProjectDTO!
+    updateProject(id: ID!, name: String, objective: String, summaryScope: String, targetAudience: String, expectedStartDate: Date, status: ProjectStatus, requester: ID): ProjectDTO!
 
     login(email: String!, password: String!): AuthToken!
     changePassword(email: String!, password: String!, newPassword: String!): Boolean!
