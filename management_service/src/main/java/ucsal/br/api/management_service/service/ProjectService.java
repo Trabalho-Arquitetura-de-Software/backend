@@ -9,10 +9,8 @@ import ucsal.br.api.management_service.entity.ProjectEntity;
 import ucsal.br.api.management_service.repository.IGroupRepository;
 import ucsal.br.api.management_service.repository.IProjectRepository;
 import ucsal.br.api.management_service.repository.IUserRepository;
-import ucsal.br.api.management_service.utils.exception.GroupNotFoundException;
-import ucsal.br.api.management_service.utils.exception.ProjectAlredyExistsException;
-import ucsal.br.api.management_service.utils.exception.ProjectNotFoundException;
-import ucsal.br.api.management_service.utils.exception.UserNotFoundException;
+import ucsal.br.api.management_service.utils.exception.*;
+import ucsal.br.api.management_service.utils.type.UserRole;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -52,15 +50,18 @@ public class ProjectService {
     }
 
     public ProjectDTO saveProject(ProjectDTO projectDTO) {
-        if (userRepository.findById(projectDTO.getRequester().getId()).isEmpty())
-            throw new UserNotFoundException("Requester not found");
+        if (userRepository.findById(projectDTO.getRequester().getId()).isEmpty()
+                && userRepository.findById(projectDTO.getRequester().getId()).get().getRole() != UserRole.PROFESSOR)
+            throw new UserNotFoundException("Professor Not Found");
 
-        if (groupRepository.findById(projectDTO.getGroup().getId()).isEmpty())
-            throw new GroupNotFoundException("Group not found");
+        if (groupRepository.findByCoordinator(projectDTO.getRequester().getId()) == null){
+            throw new IsNotACoordinatorException("Requester is not a coordinator");
+        }
+        projectDTO.setGroup(new GroupDTO(groupRepository.findByCoordinator(projectDTO.getRequester().getId())));
 
-        if (projectRepository.findByName(projectDTO.getName()) != null)
+        if (projectRepository.findByName(projectDTO.getName()) != null) {
             throw new ProjectAlredyExistsException("Project Already Exists");
-
+        }
 
         ProjectEntity projectEntity = new ProjectEntity(projectDTO);
         projectEntity = projectRepository.save(projectEntity);
@@ -92,10 +93,10 @@ public class ProjectService {
         if (projectDTO.getStatus() != null) {
             projectEntity.setStatus(projectDTO.getStatus());
         }
-        if (projectDTO.getRequester().getId() != null) {
+        if (userRepository.findById(projectDTO.getRequester().getId()).isPresent() && userRepository.findById(projectDTO.getRequester().getId()).get().getRole() == UserRole.PROFESSOR) {
             projectEntity.setRequester(projectDTO.getRequester().getId());
         }
-        if (projectDTO.getGroup().getId() != null) {
+        if (groupRepository.findByCoordinator(projectDTO.getRequester().getId()) != null) {
             projectEntity.setGroup(projectDTO.getGroup().getId());
         }
         return createProjectDTO(projectRepository.save(projectEntity));

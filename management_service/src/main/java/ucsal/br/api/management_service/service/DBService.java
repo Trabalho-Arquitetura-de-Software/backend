@@ -51,6 +51,7 @@ public class DBService {
     private void createUserProfessor() throws UserAlredyExistsException {
         UserDTO userDTO = new UserDTO();
         userDTO.setName("Professor");
+        userDTO.setAffiliatedSchool("Software Engineer");
         userDTO.setEmail("professor@test.com");
         String encryptedPassword = new BCryptPasswordEncoder().encode("professor123");
         userDTO.setPassword(encryptedPassword);
@@ -62,6 +63,7 @@ public class DBService {
     private void createUserStudent(int studentNumber) throws UserAlredyExistsException {
         UserDTO userDTO = new UserDTO();
         userDTO.setName("Student" + studentNumber);
+        userDTO.setAffiliatedSchool("Software Engineer");
         userDTO.setEmail("student" + studentNumber + "@test.com");
         String encryptedPassword = new BCryptPasswordEncoder().encode("student123");
         userDTO.setPassword(encryptedPassword);
@@ -96,7 +98,7 @@ public class DBService {
 
     private void createProject() throws ProjectAlredyExistsException {
         UserDTO requester = userService.findUserByEmail("professor@test.com");
-        GroupDTO group = groupService.findGroupByName("group1");
+        GroupDTO group = groupService.findGroupByCoordinator(requester.getId());
 
         ProjectDTO projectDTO = new ProjectDTO();
 

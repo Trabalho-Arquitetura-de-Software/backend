@@ -110,6 +110,11 @@ public class GroupService {
         return getGroupDtos(group);
     }
 
+    public GroupDTO findGroupByCoordinator(UUID coordinator) {
+        GroupEntity group = groupRepository.findByCoordinator(coordinator);
+        return getGroupDto(group);
+    }
+
     public GroupDTO findGroupByName(String groupName) {
         GroupEntity group = groupRepository.findByName(groupName);
         return getGroupDto(group);

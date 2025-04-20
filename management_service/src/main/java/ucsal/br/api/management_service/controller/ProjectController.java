@@ -36,8 +36,7 @@ public class ProjectController {
             @Argument String summaryScope,
             @Argument String targetAudience,
             @Argument LocalDate expectedStartDate,
-            @Argument UUID requester,
-            @Argument UUID group
+            @Argument UUID requester
     ) {
         return projectService.saveProject(new ProjectDTO(
                 name,
@@ -47,7 +46,7 @@ public class ProjectController {
                 expectedStartDate,
                 ProjectStatus.PENDING_ANALYSIS,
                 requester,
-                group
+                null
         ));
     }
 
@@ -61,8 +60,7 @@ public class ProjectController {
             @Argument String targetAudience,
             @Argument LocalDate expectedStartDate,
             @Argument ProjectStatus status,
-            @Argument UUID requester,
-            @Argument UUID group)
+            @Argument UUID requester)
     {
         return projectService.updateProject(new ProjectDTO(
                 id,
@@ -73,7 +71,7 @@ public class ProjectController {
                 expectedStartDate,
                 status,
                 requester,
-                group
+                null
         ));
     }
 }
