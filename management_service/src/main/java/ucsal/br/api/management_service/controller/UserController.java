@@ -55,14 +55,14 @@ public class UserController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @MutationMapping
-    public UserDTO saveUser(@Argument String name, @Argument String email, @Argument String password, @Argument UserRole role) {
-        return userService.saveUser(new UserDTO(name, email, password, role));
+    public UserDTO saveUser(@Argument String name, @Argument String affiliatedSchool, @Argument String email, @Argument String password, @Argument UserRole role) {
+        return userService.saveUser(new UserDTO(name, affiliatedSchool, email, password, role));
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @MutationMapping
-    public UserDTO updateUser(@Argument UUID id, @Argument String name, @Argument String email, @Argument String password, @Argument UserRole role) {
-        return userService.updateUser(new UserDTO(id, name, email, password, role));
+    public UserDTO updateUser(@Argument UUID id, @Argument String name, @Argument String affiliatedSchool, @Argument String email, @Argument String password, @Argument UserRole role) {
+        return userService.updateUser(new UserDTO(id, name, affiliatedSchool, email, password, role));
     }
 
     @PreAuthorize("hasRole('ADMIN')")

@@ -56,7 +56,8 @@ public class UserService {
     }
 
     public UserDTO saveUser(UserDTO userDTO) {
-        if (userRepository.findByEmail(userDTO.getEmail()) != null) throw new UserAlredyExistsException("User Already Exists");
+        if (userRepository.findByEmail(userDTO.getEmail()) != null)
+            throw new UserAlredyExistsException("User Already Exists");
         String encryptedPassword = new BCryptPasswordEncoder().encode(userDTO.getPassword());
         userDTO.setPassword(encryptedPassword);
         if (isEmail(userDTO.getEmail()).isEmpty()) {
@@ -69,7 +70,14 @@ public class UserService {
 
     public UserDTO updateUser(UserDTO userDTO) {
         UserEntity userEntity = userRepository.findById(userDTO.getId()).orElseThrow(() -> new UserNotFoundException("User not found"));
-        userEntity.setName(userDTO.getName());
+
+        if (userDTO.getName() != null) {
+            userEntity.setName(userDTO.getName());
+        }
+
+        if (userDTO.getAffiliatedSchool() != null) {
+            userEntity.setAffiliatedSchool(userDTO.getAffiliatedSchool());
+        }
 
         if (userDTO.getEmail() != null) {
             userEntity.setEmail(userDTO.getEmail());

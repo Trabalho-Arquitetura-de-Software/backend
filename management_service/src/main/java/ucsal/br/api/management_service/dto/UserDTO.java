@@ -8,20 +8,23 @@ import java.util.UUID;
 public class UserDTO {
     private UUID id;
     private String name;
+    private String affiliatedSchool;
     private String email;
     private String password;
     private UserRole role;
 
     public UserDTO() {}
-    public UserDTO(UUID id, String name, String email, String password, UserRole role) {
+    public UserDTO(UUID id, String name, String affiliatedSchool, String email, String password, UserRole role) {
         this.id = id;
         this.name = name;
+        this.affiliatedSchool = affiliatedSchool;
         this.email = email;
         this.password = password;
         this.role = role;
     }
-    public UserDTO(String name, String email, String password, UserRole role) {
+    public UserDTO(String name, String affiliatedSchool, String email, String password, UserRole role) {
         this.name = name;
+        this.affiliatedSchool = affiliatedSchool;
         this.email = email;
         this.password = password;
         this.role = role;
@@ -29,6 +32,7 @@ public class UserDTO {
     public UserDTO(UserEntity userEntity) {
         this.id = userEntity.getId();
         this.name = userEntity.getName();
+        this.affiliatedSchool = userEntity.getAffiliatedSchool();
         this.email = userEntity.getEmail();
         this.password = userEntity.getPassword();
         this.role = userEntity.getRole();
@@ -48,6 +52,14 @@ public class UserDTO {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getAffiliatedSchool() {
+        return affiliatedSchool;
+    }
+
+    public void setAffiliatedSchool(String affiliatedSchool) {
+        this.affiliatedSchool = affiliatedSchool;
     }
 
     public String getEmail() {

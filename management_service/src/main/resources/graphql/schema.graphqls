@@ -25,6 +25,7 @@ enum ProjectStatus{
 type UserDTO {
     id: ID!
     name: String
+    affiliatedSchool: String,
     email: String
     password: String
     role: UserRole
@@ -76,8 +77,8 @@ type Query {
 # ==========================================
 
 type Mutation {
-    saveUser(name: String!, email: String!, password: String!, role: UserRole!): UserDTO!
-    updateUser(id: ID!, name: String!, email: String, password: String, role: UserRole): UserDTO!
+    saveUser(name: String!, affiliatedSchool: String!, email: String!, password: String!, role: UserRole!): UserDTO!
+    updateUser(id: ID!, name: String, affiliatedSchool: String, email: String, password: String, role: UserRole): UserDTO!
     deleteUser(id: ID!): UserDTO!
 
     saveGroup(name: String!, availableForProjects: Boolean!, coordinator: ID!, students: [ID!]!): GroupDTO!
