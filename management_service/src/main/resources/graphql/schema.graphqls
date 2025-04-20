@@ -84,7 +84,7 @@ type Mutation {
     updateGroup(id: ID!, name: String, availableForProjects: Boolean, coordinator: ID, students: [ID!]): GroupDTO!
     deleteGroup(id: ID!): GroupDTO!
 
-    saveProject(name: String!, objective: String!, summaryScope: String!, targetAudience: String!, expectedStartDate: Date!, status: ProjectStatus!, requester: ID!, group: ID!): ProjectDTO!
+    saveProject(name: String!, objective: String!, summaryScope: String!, targetAudience: String!, expectedStartDate: Date!, requester: ID!, group: ID!): ProjectDTO!
     updateProject(id: ID!, name: String, objective: String, summaryScope: String, targetAudience: String, expectedStartDate: Date, status: ProjectStatus, requester: ID, group: ID): ProjectDTO!
 
     login(email: String!, password: String!): AuthToken!

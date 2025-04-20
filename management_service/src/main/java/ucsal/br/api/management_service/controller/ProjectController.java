@@ -36,7 +36,6 @@ public class ProjectController {
             @Argument String summaryScope,
             @Argument String targetAudience,
             @Argument LocalDate expectedStartDate,
-            @Argument ProjectStatus status,
             @Argument UUID requester,
             @Argument UUID group
     ) {
@@ -46,7 +45,7 @@ public class ProjectController {
                 summaryScope,
                 targetAudience,
                 expectedStartDate,
-                status,
+                ProjectStatus.PENDING_ANALYSIS,
                 requester,
                 group
         ));
