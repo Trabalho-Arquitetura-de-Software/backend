@@ -10,7 +10,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import ucsal.br.api.management_service.repository.IUserRepository;
-import ucsal.br.api.management_service.utils.exception.InvalidJWTException;
 
 import java.io.IOException;
 
