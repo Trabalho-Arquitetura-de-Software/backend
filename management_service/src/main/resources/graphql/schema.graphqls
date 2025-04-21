@@ -37,6 +37,7 @@ type GroupDTO {
     availableForProjects: Boolean
     coordinator: UserDTO
     students: [UserDTO!]
+    projects: [ProjectDTO!]
 }
 
 type ProjectDTO {

@@ -22,13 +22,13 @@ public class GroupController {
         this.groupService = groupService;
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('PROFESSOR')")
     @QueryMapping
     public List<GroupDTO> findAllGroups() {
         return groupService.findAllGroups();
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('PROFESSOR')")
     @QueryMapping
     public List<GroupDTO> findAllGroupsById(@Argument List<UUID> id) {
         return groupService.findAllGroupsById(id);

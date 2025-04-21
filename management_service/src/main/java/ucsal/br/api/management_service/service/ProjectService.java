@@ -29,6 +29,10 @@ public class ProjectService {
     }
 
     private ProjectDTO createProjectDTO(ProjectEntity projectEntity) {
+        return getProjectDTO(projectEntity, userRepository, groupRepository);
+    }
+
+    static ProjectDTO getProjectDTO(ProjectEntity projectEntity, IUserRepository userRepository, IGroupRepository groupRepository) {
         UserDTO userDTO = new UserDTO(userRepository.findById(projectEntity.getRequester()).orElseThrow(() -> new UserNotFoundException("User Not Found")));
 
         GroupEntity group = groupRepository.findById(projectEntity.getGroup()).orElseThrow(() -> new GroupNotFoundException("Group Not Found"));

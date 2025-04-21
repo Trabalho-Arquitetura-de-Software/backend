@@ -13,6 +13,7 @@ public class GroupDTO {
     private Boolean availableForProjects;
     private UserDTO coordinator;
     private List<UserDTO> students;
+    private List<ProjectDTO> projects;
 
     public GroupDTO() {}
 
@@ -51,6 +52,15 @@ public class GroupDTO {
         this.availableForProjects = availableForProjects;
         this.coordinator = coordinator;
         this.students = students;
+    }
+
+    public GroupDTO(UUID id, String name, Boolean availableForProjects, UserDTO coordinator, List<UserDTO> students, List<ProjectDTO> projects) {
+        this.id = id;
+        this.name = name;
+        this.availableForProjects = availableForProjects;
+        this.coordinator = coordinator;
+        this.students = students;
+        this.projects = projects;
     }
 
     public GroupDTO(GroupEntity groupEntity) {
@@ -108,5 +118,13 @@ public class GroupDTO {
 
     public void setStudents(List<UserDTO> students) {
         this.students = students;
+    }
+
+    public List<ProjectDTO> getProjects() {
+        return projects;
+    }
+
+    public void setProjects(List<ProjectDTO> projects) {
+        this.projects = projects;
     }
 }
