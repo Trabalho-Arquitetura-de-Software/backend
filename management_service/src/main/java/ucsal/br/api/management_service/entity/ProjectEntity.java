@@ -38,7 +38,7 @@ public class ProjectEntity {
     @Column(name = "requester_id", nullable = false)
     private UUID requester;
 
-    @Column(name = "group_id", nullable = false)
+    @Column(name = "group_id")
     private UUID group;
 
     public ProjectEntity() {}
