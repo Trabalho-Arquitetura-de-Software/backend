@@ -43,8 +43,8 @@ public class GroupController {
     @PreAuthorize("hasRole('ADMIN')")
     @Transactional
     @MutationMapping
-    public GroupDTO saveGroup(@Argument String name, @Argument Boolean availableForProjects, @Argument UUID coordinator, @Argument List<UUID> students) {
-        return groupService.saveGroup(new GroupDTO(name, availableForProjects, coordinator, students));
+    public GroupDTO saveGroup(@Argument String name, @Argument UUID coordinator, @Argument List<UUID> students) {
+        return groupService.saveGroup(new GroupDTO(name, true, coordinator, students));
     }
 
     @PreAuthorize("hasRole('ADMIN')")

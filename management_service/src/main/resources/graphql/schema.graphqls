@@ -83,7 +83,7 @@ type Mutation {
     updateUser(id: ID!, name: String, affiliatedSchool: String, email: String, password: String, role: UserRole): UserDTO!
     deleteUser(id: ID!): UserDTO!
 
-    saveGroup(name: String!, availableForProjects: Boolean!, coordinator: ID!, students: [ID!]!): GroupDTO!
+    saveGroup(name: String!, coordinator: ID!, students: [ID!]!): GroupDTO!
     updateGroup(id: ID!, name: String, availableForProjects: Boolean, coordinator: ID, students: [ID!]): GroupDTO!
     deleteGroup(id: ID!): GroupDTO!
 
