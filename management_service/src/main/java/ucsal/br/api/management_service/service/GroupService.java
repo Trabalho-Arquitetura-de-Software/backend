@@ -3,10 +3,13 @@ package ucsal.br.api.management_service.service;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import ucsal.br.api.management_service.dto.GroupDTO;
+import ucsal.br.api.management_service.dto.ProjectDTO;
 import ucsal.br.api.management_service.dto.UserDTO;
 import ucsal.br.api.management_service.entity.GroupEntity;
+import ucsal.br.api.management_service.entity.ProjectEntity;
 import ucsal.br.api.management_service.entity.UserEntity;
 import ucsal.br.api.management_service.repository.IGroupRepository;
+import ucsal.br.api.management_service.repository.IProjectRepository;
 import ucsal.br.api.management_service.repository.IUserRepository;
 import ucsal.br.api.management_service.utils.exception.GroupAlredyExistsException;
 import ucsal.br.api.management_service.utils.exception.GroupNotFoundException;
@@ -15,11 +18,14 @@ import ucsal.br.api.management_service.utils.exception.UserNotFoundException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static ucsal.br.api.management_service.service.ProjectService.getProjectDTO;
+
 @Service
 public class GroupService {
 
     private final IGroupRepository groupRepository;
     private final IUserRepository userRepository;
+    private final IProjectRepository projectRepository;
 
     private List<UserEntity> DataLoader(List<GroupEntity> groups) {
         Set<UUID> allUserIds = new HashSet<>();
@@ -31,26 +37,30 @@ public class GroupService {
         return userRepository.findAllById(allUserIds);
     }
 
-    protected List<GroupDTO> getGroupDtos(List<GroupEntity> groupEntities) {
-        Map<UUID, UserDTO> userDtoMap = DataLoader(groupEntities).stream()
-                .collect(Collectors.toMap(UserEntity::getId, UserDTO::new));
-
+    private List<GroupDTO> getGroupDTOS(List<GroupEntity> groupEntities) {
         return groupEntities.stream().map(group -> {
-            UserDTO coordinator = userDtoMap.get(group.getCoordinator());
+            List<ProjectEntity> projects = projectRepository.findAllByGroup(group.getId());
+            List<ProjectDTO> projectDTOS = projects.stream()
+                    .map(this::createProjectDTO)
+                    .toList();
 
-            List<UserDTO> students = group.getStudents().stream()
-                    .map(userDtoMap::get)
-                    .filter(Objects::nonNull)
-                    .collect(Collectors.toList());
+            UserEntity coordinator = userRepository.findById(group.getCoordinator()).get();
+            UserDTO coordinatorDTO = new UserDTO(coordinator);
+
+            List<UserEntity> students = userRepository.findAllById(group.getStudents());
+            List<UserDTO> studentsDTO = students.stream()
+                    .map(UserDTO::new)
+                    .toList();
 
             return new GroupDTO(
                     group.getId(),
                     group.getName(),
                     group.isAvailableForProjects(),
-                    coordinator,
-                    students
+                    coordinatorDTO,
+                    studentsDTO,
+                    projectDTOS
             );
-        }).collect(Collectors.toList());
+        }).toList();
     }
 
     private GroupDTO getGroupDto(GroupEntity group) {
@@ -87,27 +97,32 @@ public class GroupService {
         );
     }
 
-    public GroupService(IGroupRepository groupRepository, IUserRepository userRepository) {
+    private ProjectDTO createProjectDTO(ProjectEntity projectEntity) {
+        return getProjectDTO(projectEntity, userRepository, groupRepository);
+    }
+
+    public GroupService(IGroupRepository groupRepository, IUserRepository userRepository, IProjectRepository projectRepository) {
         this.groupRepository = groupRepository;
         this.userRepository = userRepository;
+        this.projectRepository = projectRepository;
     }
 
     public List<GroupDTO> findAllGroups() {
         List<GroupEntity> groupEntities = groupRepository.findAll();
 
-        return groupEntities.stream().map(this::getGroupDto).collect(Collectors.toList());
+        return getGroupDTOS(groupEntities);
     }
 
     public List<GroupDTO> findAllGroupsById(List<UUID> id) {
         List<GroupEntity> groupEntities = groupRepository.findAllById(id);
 
-        return getGroupDtos(groupEntities);
+        return getGroupDTOS(groupEntities);
     }
 
     public List<GroupDTO> findAllGroupsByNameIn(List<String> names) {
-        List<GroupEntity> group = groupRepository.findAllByNameIn(names);
+        List<GroupEntity> groupEntities = groupRepository.findAllByNameIn(names);
 
-        return getGroupDtos(group);
+        return getGroupDTOS(groupEntities);
     }
 
     public GroupDTO findGroupByCoordinator(UUID coordinator) {

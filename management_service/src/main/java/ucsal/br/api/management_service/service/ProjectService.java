@@ -29,16 +29,14 @@ public class ProjectService {
     }
 
     private ProjectDTO createProjectDTO(ProjectEntity projectEntity) {
+        return getProjectDTO(projectEntity, userRepository, groupRepository);
+    }
+
+    static ProjectDTO getProjectDTO(ProjectEntity projectEntity, IUserRepository userRepository, IGroupRepository groupRepository) {
         UserDTO userDTO = new UserDTO(userRepository.findById(projectEntity.getRequester()).orElseThrow(() -> new UserNotFoundException("User Not Found")));
 
         GroupEntity group = groupRepository.findById(projectEntity.getGroup()).orElseThrow(() -> new GroupNotFoundException("Group Not Found"));
-        GroupDTO groupDTO = new GroupDTO(
-                group.getId(),
-                group.getName(),
-                group.isAvailableForProjects(),
-                new UserDTO(userRepository.findById(group.getCoordinator()).orElseThrow(() -> new UserNotFoundException("Coordinator Not Found"))),
-                userRepository.findAllById(group.getStudents()).stream().map(UserDTO::new).collect(Collectors.toList())
-        );
+        GroupDTO groupDTO = new GroupDTO(group.getId(), group.getName(), group.isAvailableForProjects(), new UserDTO(userRepository.findById(group.getCoordinator()).orElseThrow(() -> new UserNotFoundException("Coordinator Not Found"))), userRepository.findAllById(group.getStudents()).stream().map(UserDTO::new).collect(Collectors.toList()));
 
         return new ProjectDTO(projectEntity.getId(), projectEntity.getName(), projectEntity.getObjective(), projectEntity.getSummaryScope(), projectEntity.getTargetAudience(), projectEntity.getExpectedStartDate(), projectEntity.getStatus(), userDTO, groupDTO);
     }
@@ -50,14 +48,8 @@ public class ProjectService {
     }
 
     public ProjectDTO saveProject(ProjectDTO projectDTO) {
-        if (userRepository.findById(projectDTO.getRequester().getId()).isEmpty()
-                && userRepository.findById(projectDTO.getRequester().getId()).get().getRole() != UserRole.PROFESSOR)
+        if (userRepository.findById(projectDTO.getRequester().getId()).isEmpty() && userRepository.findById(projectDTO.getRequester().getId()).get().getRole() != UserRole.PROFESSOR)
             throw new UserNotFoundException("Professor Not Found");
-
-        if (groupRepository.findByCoordinator(projectDTO.getRequester().getId()) == null){
-            throw new IsNotACoordinatorException("Requester is not a coordinator");
-        }
-        projectDTO.setGroup(new GroupDTO(groupRepository.findByCoordinator(projectDTO.getRequester().getId())));
 
         if (projectRepository.findByName(projectDTO.getName()) != null) {
             throw new ProjectAlredyExistsException("Project Already Exists");
@@ -70,7 +62,8 @@ public class ProjectService {
     }
 
     public ProjectDTO updateProject(ProjectDTO projectDTO) {
-        ProjectEntity projectEntity = projectRepository.findById(projectDTO.getId()).orElseThrow(() -> new ProjectNotFoundException("Project Not Found"));
+        ProjectEntity projectEntity = projectRepository.findById(projectDTO.getId())
+                .orElseThrow(() -> new ProjectNotFoundException("Project Not Found"));
 
         if (projectDTO.getId() != null) {
             projectEntity.setId(projectDTO.getId());
@@ -93,12 +86,19 @@ public class ProjectService {
         if (projectDTO.getStatus() != null) {
             projectEntity.setStatus(projectDTO.getStatus());
         }
-        if (userRepository.findById(projectDTO.getRequester().getId()).isPresent() && userRepository.findById(projectDTO.getRequester().getId()).get().getRole() == UserRole.PROFESSOR) {
-            projectEntity.setRequester(projectDTO.getRequester().getId());
+        if (projectDTO.getRequester() != null && projectDTO.getRequester().getId() != null) {
+            var userOpt = userRepository.findById(projectDTO.getRequester().getId());
+            userOpt.ifPresent(user -> {
+                if (user.getRole() == UserRole.PROFESSOR) {
+                    projectEntity.setRequester(user.getId());
+                }
+            });
         }
-        if (groupRepository.findByCoordinator(projectDTO.getRequester().getId()) != null) {
-            projectEntity.setGroup(projectDTO.getGroup().getId());
+        if (projectDTO.getGroup() != null && projectDTO.getGroup().getId() != null) {
+            var groupOpt = groupRepository.findById(projectDTO.getGroup().getId());
+            groupOpt.ifPresent(group -> projectEntity.setGroup(group.getId()));
         }
+
         return createProjectDTO(projectRepository.save(projectEntity));
     }
 }
