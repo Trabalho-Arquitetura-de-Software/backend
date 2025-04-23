@@ -102,8 +102,10 @@ public class ProjectService {
             });
         }
         if (projectDTO.getGroup() != null && projectDTO.getGroup().getId() != null) {
-            var groupOpt = groupRepository.findById(projectDTO.getGroup().getId());
-            groupOpt.ifPresent(group -> projectEntity.setGroup(group.getId()));
+            if (projectDTO.getGroup().getAvailableForProjects()){
+                var groupOpt = groupRepository.findById(projectDTO.getGroup().getId());
+                groupOpt.ifPresent(group -> projectEntity.setGroup(group.getId()));
+            }
         }
 
         return createProjectDTO(projectRepository.save(projectEntity));
