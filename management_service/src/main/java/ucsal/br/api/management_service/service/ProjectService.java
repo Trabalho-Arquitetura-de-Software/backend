@@ -13,6 +13,7 @@ import ucsal.br.api.management_service.utils.exception.*;
 import ucsal.br.api.management_service.utils.type.UserRole;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -35,8 +36,12 @@ public class ProjectService {
     static ProjectDTO getProjectDTO(ProjectEntity projectEntity, IUserRepository userRepository, IGroupRepository groupRepository) {
         UserDTO userDTO = new UserDTO(userRepository.findById(projectEntity.getRequester()).orElseThrow(() -> new UserNotFoundException("User Not Found")));
 
-        GroupEntity group = groupRepository.findById(projectEntity.getGroup()).orElseThrow(() -> new GroupNotFoundException("Group Not Found"));
-        GroupDTO groupDTO = new GroupDTO(group.getId(), group.getName(), group.isAvailableForProjects(), new UserDTO(userRepository.findById(group.getCoordinator()).orElseThrow(() -> new UserNotFoundException("Coordinator Not Found"))), userRepository.findAllById(group.getStudents()).stream().map(UserDTO::new).collect(Collectors.toList()));
+        GroupDTO groupDTO = null;
+
+        if (projectEntity.getGroup() != null) {
+            GroupEntity group = groupRepository.findById(projectEntity.getGroup()).orElseThrow(() -> new GroupNotFoundException("Group Not Found"));
+            groupDTO = new GroupDTO(group.getId(), group.getName(), group.isAvailableForProjects(), new UserDTO(userRepository.findById(group.getCoordinator()).orElseThrow(() -> new UserNotFoundException("Coordinator Not Found"))), userRepository.findAllById(group.getStudents()).stream().map(UserDTO::new).collect(Collectors.toList()));
+        }
 
         return new ProjectDTO(projectEntity.getId(), projectEntity.getName(), projectEntity.getObjective(), projectEntity.getSummaryScope(), projectEntity.getTargetAudience(), projectEntity.getExpectedStartDate(), projectEntity.getStatus(), userDTO, groupDTO);
     }
@@ -48,16 +53,18 @@ public class ProjectService {
     }
 
     public ProjectDTO saveProject(ProjectDTO projectDTO) {
-        if (userRepository.findById(projectDTO.getRequester().getId()).isEmpty() && userRepository.findById(projectDTO.getRequester().getId()).get().getRole() != UserRole.PROFESSOR)
-            throw new UserNotFoundException("Professor Not Found");
+        var userOpt = userRepository.findById(projectDTO.getRequester().getId());
 
-        if (projectRepository.findByName(projectDTO.getName()) != null) {
-            throw new ProjectAlredyExistsException("Project Already Exists");
+        if (userOpt.isEmpty() || userOpt.get().getRole() != UserRole.PROFESSOR) {
+            throw new UserNotFoundException("Professor Not Found");
         }
 
         ProjectEntity projectEntity = new ProjectEntity(projectDTO);
-        projectEntity = projectRepository.save(projectEntity);
 
+        // Remove o grupo ao salvar
+        projectEntity.setGroup(null);
+
+        projectEntity = projectRepository.save(projectEntity);
         return createProjectDTO(projectEntity);
     }
 

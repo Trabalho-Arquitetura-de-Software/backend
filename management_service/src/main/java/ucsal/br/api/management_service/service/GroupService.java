@@ -27,16 +27,6 @@ public class GroupService {
     private final IUserRepository userRepository;
     private final IProjectRepository projectRepository;
 
-    private List<UserEntity> DataLoader(List<GroupEntity> groups) {
-        Set<UUID> allUserIds = new HashSet<>();
-        for (GroupEntity group : groups) {
-            allUserIds.add(group.getCoordinator());
-            allUserIds.addAll(group.getStudents());
-        }
-
-        return userRepository.findAllById(allUserIds);
-    }
-
     private List<GroupDTO> getGroupDTOS(List<GroupEntity> groupEntities) {
         return groupEntities.stream().map(group -> {
             List<ProjectEntity> projects = projectRepository.findAllByGroup(group.getId());
