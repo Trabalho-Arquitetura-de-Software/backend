@@ -52,7 +52,8 @@ type ProjectDTO {
     group: GroupDTO
 }
 
-type AuthToken {
+type LoginReturnDTO{
+    user: UserDTO!
     token: String!
 }
 
@@ -89,7 +90,7 @@ type Mutation {
     saveProject(name: String!, objective: String!, summaryScope: String!, targetAudience: String!, expectedStartDate: Date!, requester: ID!): ProjectDTO!
     updateProject(id: ID!, name: String, objective: String, summaryScope: String, targetAudience: String, expectedStartDate: Date, status: ProjectStatus, requester: ID): ProjectDTO!
 
-    login(email: String!, password: String!): AuthToken!
+    login(email: String!, password: String!): LoginReturnDTO!
     changePassword(email: String!, password: String!, newPassword: String!): Boolean!
 
     populateTheDataBase: String!
