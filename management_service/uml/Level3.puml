@@ -7,6 +7,7 @@ skinparam dpi 150
 scale 1.5
 
 Container_Boundary(backend_boundary, "Backend (GraphQL)") {
+
     ' Projeto
     Component(projectQuery, "ProjectController.findAllProjects()", "GraphQL Query", "Lista projetos")
     Component(projectMutation, "ProjectController.saveProject(...)", "GraphQL Mutation", "Salva projeto")
@@ -34,10 +35,6 @@ Container_Boundary(backend_boundary, "Backend (GraphQL)") {
     Component(tokenService, "TokenService", "Java Class", "JWT")
     Component(authService, "AuthService", "Java Class", "Autenticação")
     Component(securityFilter, "SecurityFilter", "Java Class", "Filtro JWT")
-
-    ' Inicialização
-    Component(dbMutation, "DBController.populateTheDataBase()", "GraphQL Mutation", "Inicializar base")
-    Component(dbService, "DBService", "Java Class", "Popular base")
 }
 
 ' Relacionamentos principais
@@ -66,5 +63,4 @@ Rel(loginMutation, tokenService, "Login")
 Rel(authService, userRepository, "Autentica")
 Rel(securityFilter, tokenService, "Valida JWT")
 Rel(securityFilter, userRepository, "Carrega usuário")
-Rel(dbMutation, dbService, "Popular base")
 @enduml
