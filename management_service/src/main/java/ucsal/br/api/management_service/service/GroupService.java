@@ -102,12 +102,10 @@ public class GroupService {
         return getGroupDto(group);
     }
 
-//    public GroupDTO findGroupByStudent(UUID student) {
-//        List<UUID> students = new ArrayList<>();
-//        students.add(student);
-//        GroupEntity group = groupRepository.findByStudents(students);
-//        return getGroupDto(group);
-//    }
+    public GroupDTO findGroupByStudent(UUID student) {
+        GroupEntity group = groupRepository.findByStudentsContaining(student);
+        return getGroupDto(group);
+    }
 
     public GroupDTO findGroupByName(String groupName) {
         GroupEntity group = groupRepository.findByName(groupName);
