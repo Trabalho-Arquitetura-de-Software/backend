@@ -60,7 +60,8 @@ public class ProjectController {
             @Argument String targetAudience,
             @Argument LocalDate expectedStartDate,
             @Argument ProjectStatus status,
-            @Argument UUID requester)
+            @Argument UUID requester,
+            @Argument UUID group)
     {
         return projectService.updateProject(new ProjectDTO(
                 id,
@@ -71,7 +72,7 @@ public class ProjectController {
                 expectedStartDate,
                 status,
                 requester,
-                null
+                group
         ));
     }
 }

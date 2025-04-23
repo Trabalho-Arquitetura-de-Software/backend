@@ -27,30 +27,10 @@ public class GroupService {
     private final IUserRepository userRepository;
     private final IProjectRepository projectRepository;
 
-    private List<GroupDTO> getGroupDTOS(List<GroupEntity> groupEntities) {
-        return groupEntities.stream().map(group -> {
-            List<ProjectEntity> projects = projectRepository.findAllByGroup(group.getId());
-            List<ProjectDTO> projectDTOS = projects.stream()
-                    .map(this::createProjectDTO)
-                    .toList();
-
-            UserEntity coordinator = userRepository.findById(group.getCoordinator()).get();
-            UserDTO coordinatorDTO = new UserDTO(coordinator);
-
-            List<UserEntity> students = userRepository.findAllById(group.getStudents());
-            List<UserDTO> studentsDTO = students.stream()
-                    .map(UserDTO::new)
-                    .toList();
-
-            return new GroupDTO(
-                    group.getId(),
-                    group.getName(),
-                    group.isAvailableForProjects(),
-                    coordinatorDTO,
-                    studentsDTO,
-                    projectDTOS
-            );
-        }).toList();
+    public GroupService(IGroupRepository groupRepository, IUserRepository userRepository, IProjectRepository projectRepository) {
+        this.groupRepository = groupRepository;
+        this.userRepository = userRepository;
+        this.projectRepository = projectRepository;
     }
 
     private GroupDTO getGroupDto(GroupEntity group) {
@@ -65,7 +45,6 @@ public class GroupService {
         }
 
         List<UserEntity> userEntities = userRepository.findAllById(allUserIds);
-
         Map<UUID, UserDTO> userDTOMap = userEntities.stream()
                 .collect(Collectors.toMap(UserEntity::getId, UserDTO::new));
 
@@ -75,15 +54,21 @@ public class GroupService {
                 ? group.getStudents().stream()
                 .map(userDTOMap::get)
                 .filter(Objects::nonNull)
-                .collect(Collectors.toList())
+                .toList()
                 : Collections.emptyList();
+
+        List<ProjectEntity> projects = projectRepository.findAllByGroup(group.getId());
+        List<ProjectDTO> projectDTOS = projects.stream()
+                .map(this::createProjectDTO)
+                .toList();
 
         return new GroupDTO(
                 group.getId(),
                 group.getName(),
                 group.isAvailableForProjects(),
                 coordinatorDTO,
-                students
+                students,
+                projectDTOS
         );
     }
 
@@ -91,28 +76,25 @@ public class GroupService {
         return getProjectDTO(projectEntity, userRepository, groupRepository);
     }
 
-    public GroupService(IGroupRepository groupRepository, IUserRepository userRepository, IProjectRepository projectRepository) {
-        this.groupRepository = groupRepository;
-        this.userRepository = userRepository;
-        this.projectRepository = projectRepository;
-    }
-
     public List<GroupDTO> findAllGroups() {
         List<GroupEntity> groupEntities = groupRepository.findAll();
-
-        return getGroupDTOS(groupEntities);
+        return groupEntities.stream()
+                .map(this::getGroupDto)
+                .toList();
     }
 
     public List<GroupDTO> findAllGroupsById(List<UUID> id) {
         List<GroupEntity> groupEntities = groupRepository.findAllById(id);
-
-        return getGroupDTOS(groupEntities);
+        return groupEntities.stream()
+                .map(this::getGroupDto)
+                .toList();
     }
 
     public List<GroupDTO> findAllGroupsByNameIn(List<String> names) {
         List<GroupEntity> groupEntities = groupRepository.findAllByNameIn(names);
-
-        return getGroupDTOS(groupEntities);
+        return groupEntities.stream()
+                .map(this::getGroupDto)
+                .toList();
     }
 
     public GroupDTO findGroupByCoordinator(UUID coordinator) {
@@ -177,7 +159,7 @@ public class GroupService {
                     : existingGroup.getStudents();
             newGroup.setStudents(studentIds);
 
-            GroupEntity savedGroup = groupRepository.save(newGroup); // Salvar novo grupo
+            GroupEntity savedGroup = groupRepository.save(newGroup);
             return getGroupDto(savedGroup);
         }
     }
