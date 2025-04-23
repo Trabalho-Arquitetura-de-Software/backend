@@ -7,7 +7,6 @@ import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import ucsal.br.api.management_service.dto.GroupDTO;
-import ucsal.br.api.management_service.dto.UserDTO;
 import ucsal.br.api.management_service.service.GroupService;
 
 import java.util.List;
@@ -34,11 +33,23 @@ public class GroupController {
         return groupService.findAllGroupsById(id);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('PROFESSOR')")
     @QueryMapping
     public List<GroupDTO> findAllGroupsByNameIn(@Argument List<String> names) {
         return groupService.findAllGroupsByNameIn(names);
     }
+
+    @PreAuthorize("hasRole('PROFESSOR')")
+    @QueryMapping
+    public GroupDTO findGroupByCoordinator(@Argument UUID coordinator_id) {
+        return groupService.findGroupByCoordinator(coordinator_id);
+    }
+
+//    @PreAuthorize("hasRole('STUDENT')")
+//    @QueryMapping
+//    public GroupDTO findGroupByStudent(@Argument UUID student_id) {
+//        return groupService.findGroupByStudent(student_id);
+//    }
 
     @PreAuthorize("hasRole('ADMIN')")
     @Transactional
