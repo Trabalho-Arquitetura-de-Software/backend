@@ -7,7 +7,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Controller;
-import ucsal.br.api.management_service.dto.AuthToken;
+import ucsal.br.api.management_service.dto.LoginReturnDTO;
 import ucsal.br.api.management_service.dto.UserDTO;
 import ucsal.br.api.management_service.entity.UserEntity;
 import ucsal.br.api.management_service.service.UserService;
@@ -72,14 +72,14 @@ public class UserController {
     }
 
     @MutationMapping
-    public AuthToken login(@Argument String email, @Argument String password) {
+    public LoginReturnDTO login(@Argument String email, @Argument String password) {
         var usernamePassword = new UsernamePasswordAuthenticationToken(email, password);
         var auth = authenticationManager.authenticate(usernamePassword);
 
         if (auth.isAuthenticated()) {
             var user = (UserEntity) auth.getPrincipal();
             var token = tokenService.generateToken(user);
-            return new AuthToken(token);
+            return new LoginReturnDTO(userService.findUserByEmail(email), token);
         }
 
         throw new RuntimeException("Erro ao autenticar usuário");
