@@ -2,6 +2,7 @@ package ucsal.br.api.management_service.dto;
 
 import ucsal.br.api.management_service.entity.GroupEntity;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -20,15 +21,17 @@ public class GroupDTO {
     public GroupDTO(String name, Boolean availableForProjects, UUID coordinator, List<UUID> students) {
         this.name = name;
         this.availableForProjects = availableForProjects;
-
         this.coordinator = new UserDTO();
         this.coordinator.setId(coordinator);
-
-        this.students = students.stream().map(uuid -> {
-            UserDTO student = new UserDTO();
-            student.setId(uuid);
-            return student;
-        }).collect(Collectors.toList());
+        this.students = students != null
+                ? students.stream()
+                .map(uuid -> {
+                    UserDTO student = new UserDTO();
+                    student.setId(uuid);
+                    return student;
+                })
+                .collect(Collectors.toList())
+                : new ArrayList<>();
     }
 
     public GroupDTO(UUID id, String name, Boolean availableForProjects, UUID coordinator, List<UUID> students) {
@@ -67,18 +70,19 @@ public class GroupDTO {
         this.id = groupEntity.getId();
         this.name = groupEntity.getName();
         this.availableForProjects = groupEntity.isAvailableForProjects();
-
         this.coordinator = new UserDTO();
         this.coordinator.setId(groupEntity.getCoordinator());
-
-        this.students = groupEntity.getStudents().stream()
+        this.students = groupEntity.getStudents() != null
+                ? groupEntity.getStudents().stream()
                 .map(uuid -> {
                     UserDTO student = new UserDTO();
                     student.setId(uuid);
                     return student;
                 })
-                .collect(Collectors.toList());
+                .collect(Collectors.toList())
+                : new ArrayList<>();
     }
+
 
     public UUID getId() {
         return id;

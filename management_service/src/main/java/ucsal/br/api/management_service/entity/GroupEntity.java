@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import ucsal.br.api.management_service.dto.GroupDTO;
 import ucsal.br.api.management_service.dto.UserDTO;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -46,8 +47,13 @@ public class GroupEntity {
         this.name = groupDTO.getName();
         this.availableForProjects = groupDTO.getAvailableForProjects();
         this.coordinator = groupDTO.getCoordinator().getId();
-        this.students = groupDTO.getStudents().stream().map(UserDTO::getId).collect(Collectors.toList());
+        this.students = groupDTO.getStudents() != null
+                ? groupDTO.getStudents().stream()
+                .map(UserDTO::getId)
+                .collect(Collectors.toList())
+                : new ArrayList<>();
     }
+
 
     public UUID getId() {
         return id;

@@ -50,17 +50,21 @@ public class GroupService {
 
         UserDTO coordinatorDTO = userDTOMap.get(group.getCoordinator());
 
-        List<UserDTO> students = (group.getStudents() != null)
-                ? group.getStudents().stream()
-                .map(userDTOMap::get)
-                .filter(Objects::nonNull)
-                .toList()
-                : Collections.emptyList();
+        List<UserDTO> students = new ArrayList<>(); // Inicializa com lista vazia
+        if (group.getStudents() != null) {
+            students = group.getStudents().stream()
+                    .map(userDTOMap::get)
+                    .filter(Objects::nonNull)
+                    .toList();
+        }
 
-        List<ProjectEntity> projects = projectRepository.findAllByGroup(group.getId());
-        List<ProjectDTO> projectDTOS = projects.stream()
-                .map(this::createProjectDTO)
-                .toList();
+        List<ProjectDTO> projectDTOS = new ArrayList<>();
+        if (group.getId() != null) {
+            List<ProjectEntity> projects = projectRepository.findAllByGroup(group.getId());
+            projectDTOS = projects.stream()
+                    .map(this::createProjectDTO)
+                    .toList();
+        }
 
         return new GroupDTO(
                 group.getId(),
@@ -71,6 +75,7 @@ public class GroupService {
                 projectDTOS
         );
     }
+
 
     private ProjectDTO createProjectDTO(ProjectEntity projectEntity) {
         return getProjectDTO(projectEntity, userRepository, groupRepository);
@@ -136,20 +141,32 @@ public class GroupService {
         if (existingGroup.isPresent()) {
             throw new GroupAlredyExistsException("Group with name " + groupDTO.getName() + " already exists.");
         }
-        List<UserEntity> students = userRepository.findAllById(
-                groupDTO.getStudents().stream()
-                        .map(UserDTO::getId)
-                        .collect(Collectors.toList())
-        );
 
-        if (students.size() != groupDTO.getStudents().size())
-            throw new UserNotFoundException("One or more students were not found");
+        GroupEntity group = new GroupEntity();
+        group.setName(groupDTO.getName());
+        group.setAvailableForProjects(groupDTO.getAvailableForProjects());
+        group.setCoordinator(groupDTO.getCoordinator().getId());
+        group.setStudents(new ArrayList<>()); // Inicializa com lista vazia se não houver estudantes
 
-        GroupEntity group = new GroupEntity(groupDTO);
+        if (groupDTO.getStudents() != null && !groupDTO.getStudents().isEmpty()) {
+            List<UserEntity> students = userRepository.findAllById(
+                    groupDTO.getStudents().stream()
+                            .map(UserDTO::getId)
+                            .collect(Collectors.toList())
+            );
+
+            if (students.size() != groupDTO.getStudents().size())
+                throw new UserNotFoundException("One or more students were not found");
+
+            group.setStudents(groupDTO.getStudents().stream()
+                    .map(UserDTO::getId)
+                    .collect(Collectors.toList()));
+        }
+
         group = groupRepository.save(group);
-
         return getGroupDto(group);
     }
+
 
     public GroupDTO updateGroup(UUID id, String name, Boolean availableForProjects, UUID coordinator, List<UUID> students) {
         GroupEntity existingGroup = groupRepository.findById(id)
