@@ -183,6 +183,18 @@ public class GroupService {
         }
     }
 
+    public GroupDTO removeStudent(UUID groupId, UUID studentId) {
+        GroupEntity group = groupRepository.findById(groupId)
+                .orElseThrow(() -> new GroupNotFoundException("Group with ID " + groupId + " not found"));
+
+        List<UUID> students = group.getStudents();
+        students.remove(studentId);
+        group.setStudents(students);
+
+        GroupEntity updatedGroup = groupRepository.save(group);
+        return getGroupDto(updatedGroup);
+    }
+
     public GroupDTO deleteGroup(UUID id) {
         GroupEntity group = groupRepository.findById(id)
                 .orElseThrow(() -> new GroupNotFoundException("Group with ID " + id + " not found"));

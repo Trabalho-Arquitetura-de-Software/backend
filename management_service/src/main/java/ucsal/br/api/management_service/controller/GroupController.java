@@ -68,6 +68,13 @@ public class GroupController {
     @PreAuthorize("hasRole('ADMIN')")
     @Transactional
     @MutationMapping
+    public GroupDTO removeStudent(@Argument UUID groupId, @Argument UUID studentId) {
+        return groupService.removeStudent(groupId, studentId);
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @Transactional
+    @MutationMapping
     public GroupDTO deleteGroup(@Argument UUID id) {
         return groupService.deleteGroup(id);
     }
