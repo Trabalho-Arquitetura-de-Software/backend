@@ -52,6 +52,11 @@ public class ProjectService {
         return projectEntities.stream().map(this::createProjectDTO).collect(Collectors.toList());
     }
 
+    public List<ProjectDTO> findAllProjectsByRequesterId(UUID requesterId) {
+        List<ProjectEntity> projectEntities = projectRepository.findAllByRequester(requesterId);
+        return projectEntities.stream().map(this::createProjectDTO).collect(Collectors.toList());
+    }
+
     public ProjectDTO saveProject(ProjectDTO projectDTO) {
         var userOpt = userRepository.findById(projectDTO.getRequester().getId());
 

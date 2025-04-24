@@ -9,7 +9,6 @@ import java.util.UUID;
 
 @Repository
 public interface IProjectRepository extends JpaRepository<ProjectEntity, UUID> {
-    ProjectEntity findByName(String name);
-
+    List<ProjectEntity> findAllByRequester(UUID requester);
     List<ProjectEntity> findAllByGroup(UUID group);
 }

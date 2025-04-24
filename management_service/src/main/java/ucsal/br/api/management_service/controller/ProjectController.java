@@ -29,6 +29,12 @@ public class ProjectController {
     }
 
     @PreAuthorize("hasRole('PROFESSOR')")
+    @QueryMapping
+    public List<ProjectDTO> findAllProjectsByRequester(@Argument UUID requester_id) {
+        return projectService.findAllProjectsByRequesterId(requester_id);
+    }
+
+    @PreAuthorize("hasRole('PROFESSOR')")
     @MutationMapping
     public ProjectDTO saveProject(
             @Argument String name,

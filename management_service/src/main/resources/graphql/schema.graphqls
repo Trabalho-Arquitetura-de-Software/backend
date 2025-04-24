@@ -74,6 +74,7 @@ type Query {
     findAllGroupsByStudentId(student_id: ID!): [GroupDTO!]
 
     findAllProjects: [ProjectDTO!]!
+    findAllProjectsByRequester(requester_id: ID!): [ProjectDTO!]!
 }
 
 # ==========================================
