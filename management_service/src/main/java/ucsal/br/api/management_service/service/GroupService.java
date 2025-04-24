@@ -13,6 +13,7 @@ import ucsal.br.api.management_service.repository.IProjectRepository;
 import ucsal.br.api.management_service.repository.IUserRepository;
 import ucsal.br.api.management_service.utils.exception.GroupAlredyExistsException;
 import ucsal.br.api.management_service.utils.exception.GroupNotFoundException;
+import ucsal.br.api.management_service.utils.exception.UserAlredyExistsException;
 import ucsal.br.api.management_service.utils.exception.UserNotFoundException;
 
 import java.util.*;
@@ -209,6 +210,15 @@ public class GroupService {
         if (student == null)
             throw new UserNotFoundException("Student with Email " + studentEmail + " not found");
 
+        List<GroupEntity> studentGroups = groupRepository.findAllByStudentId(student.getId());
+
+        boolean alreadyInGroup = studentGroups.stream()
+                .anyMatch(g -> g.getId().equals(groupId));
+
+        if (alreadyInGroup) {
+            throw new UserAlredyExistsException("Student is already in this group");
+        }
+
         List<UUID> students = group.getStudents();
         students.add(student.getId());
         group.setStudents(students);
@@ -225,12 +235,18 @@ public class GroupService {
             throw new UserNotFoundException("Student with ID " + studentId + " not found");
 
         List<UUID> students = group.getStudents();
+
+        if (!students.contains(studentId)) {
+            throw new UserNotFoundException("Student with ID " + studentId + " is not in this group");
+        }
+
         students.remove(studentId);
         group.setStudents(students);
 
         GroupEntity updatedGroup = groupRepository.save(group);
         return getGroupDto(updatedGroup);
     }
+
 
     public GroupDTO deleteGroup(UUID id) {
         GroupEntity group = groupRepository.findById(id)
