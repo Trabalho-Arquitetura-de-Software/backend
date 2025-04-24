@@ -97,14 +97,28 @@ public class GroupService {
                 .toList();
     }
 
-    public GroupDTO findGroupByCoordinator(UUID coordinator) {
-        GroupEntity group = groupRepository.findByCoordinator(coordinator);
-        return getGroupDto(group);
+    public List<GroupDTO> findAllGroupsByCoordinatorId(UUID coordinatorId) {
+        List<GroupEntity> groupEntities = groupRepository.findAllByCoordinatorId(coordinatorId);
+
+        if (groupEntities.isEmpty()) {
+            throw new GroupNotFoundException("No groups found for coordinator ID " + coordinatorId);
+        }
+
+        return groupEntities.stream()
+                .map(this::getGroupDto)
+                .toList();
     }
 
-    public GroupDTO findGroupByStudent(UUID student) {
-        GroupEntity group = groupRepository.findByStudentsContaining(student);
-        return getGroupDto(group);
+    public List<GroupDTO> findAllGroupsByStudentId(UUID studentId) {
+        List<GroupEntity> groupEntities = groupRepository.findAllByStudentId(studentId);
+
+        if (groupEntities.isEmpty()) {
+            throw new GroupNotFoundException("No groups found for student ID " + studentId);
+        }
+
+        return groupEntities.stream()
+                .map(this::getGroupDto)
+                .toList();
     }
 
     public GroupDTO findGroupByName(String groupName) {

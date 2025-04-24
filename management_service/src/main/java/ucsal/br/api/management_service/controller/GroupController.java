@@ -41,14 +41,14 @@ public class GroupController {
 
     @PreAuthorize("hasRole('PROFESSOR')")
     @QueryMapping
-    public GroupDTO findGroupByCoordinator(@Argument UUID coordinator_id) {
-        return groupService.findGroupByCoordinator(coordinator_id);
+    public List<GroupDTO> findAllGroupByCoordinator(@Argument UUID coordinator_id) {
+        return groupService.findAllGroupsByCoordinatorId(coordinator_id);
     }
 
     @PreAuthorize("hasRole('STUDENT')")
     @QueryMapping
-    public GroupDTO findGroupByStudent(@Argument UUID student_id) {
-        return groupService.findGroupByStudent(student_id);
+    public List<GroupDTO> findAllGroupsByStudentId(@Argument UUID student_id) {
+        return groupService.findAllGroupsByStudentId(student_id);
     }
 
     @PreAuthorize("hasRole('ADMIN')")

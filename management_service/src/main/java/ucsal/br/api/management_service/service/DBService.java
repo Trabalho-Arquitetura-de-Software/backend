@@ -98,6 +98,7 @@ public class DBService {
 
     private void createProject() throws ProjectAlredyExistsException {
         UserDTO requester = userService.findUserByEmail("professor@test.com");
+        GroupDTO group = groupService.findGroupByName("group1");
 
         ProjectDTO projectDTO = new ProjectDTO();
 
@@ -108,6 +109,7 @@ public class DBService {
         projectDTO.setExpectedStartDate(LocalDate.of(2025, 8, 1));
         projectDTO.setStatus(ProjectStatus.PENDING_ANALYSIS);
         projectDTO.setRequester(requester);
+        projectDTO.setGroup(group);
 
         projectService.saveProject(projectDTO);
     }

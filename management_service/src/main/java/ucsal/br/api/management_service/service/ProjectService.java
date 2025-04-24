@@ -55,13 +55,12 @@ public class ProjectService {
     public ProjectDTO saveProject(ProjectDTO projectDTO) {
         var userOpt = userRepository.findById(projectDTO.getRequester().getId());
 
-        if (userOpt.isEmpty() || userOpt.get().getRole() != UserRole.PROFESSOR) {
+        if (userOpt.isEmpty() || userOpt.get().getRole() == UserRole.STUDENT) {
             throw new UserNotFoundException("Professor Not Found");
         }
 
         ProjectEntity projectEntity = new ProjectEntity(projectDTO);
 
-        // Remove o grupo ao salvar
         projectEntity.setGroup(null);
 
         projectEntity = projectRepository.save(projectEntity);
@@ -93,6 +92,7 @@ public class ProjectService {
         if (projectDTO.getStatus() != null) {
             projectEntity.setStatus(projectDTO.getStatus());
         }
+
         if (projectDTO.getRequester() != null && projectDTO.getRequester().getId() != null) {
             var userOpt = userRepository.findById(projectDTO.getRequester().getId());
             userOpt.ifPresent(user -> {
@@ -101,9 +101,10 @@ public class ProjectService {
                 }
             });
         }
+
         if (projectDTO.getGroup() != null && projectDTO.getGroup().getId() != null) {
-            if (projectDTO.getGroup().getAvailableForProjects()){
-                var groupOpt = groupRepository.findById(projectDTO.getGroup().getId());
+            var groupOpt = groupRepository.findById(projectDTO.getGroup().getId());
+            if (groupOpt.get().isAvailableForProjects()) {
                 groupOpt.ifPresent(group -> projectEntity.setGroup(group.getId()));
             }
         }

@@ -70,8 +70,8 @@ type Query {
     findAllGroupsById(id: [ID!]!): [GroupDTO!]!
     findAllGroups: [GroupDTO!]!
     findAllGroupsByNameIn(names: [String!]!): [GroupDTO!]!
-    findGroupByCoordinator(coordinator_id: ID!): GroupDTO!
-    findGroupByStudent(student_id: ID!): GroupDTO!
+    findAllGroupByCoordinator(coordinator_id: ID!): [GroupDTO!]!
+    findAllGroupsByStudentId(student_id: ID!): [GroupDTO!]
 
     findAllProjects: [ProjectDTO!]!
 }
