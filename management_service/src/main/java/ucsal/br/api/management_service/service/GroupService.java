@@ -183,15 +183,17 @@ public class GroupService {
         }
     }
 
-    public GroupDTO addStudent(UUID groupId, UUID studentId) {
+    public GroupDTO addStudent(UUID groupId, String studentEmail) {
         GroupEntity group = groupRepository.findById(groupId)
                 .orElseThrow(() -> new GroupNotFoundException("Group with ID " + groupId + " not found"));
 
-        if (userRepository.findById(studentId).isEmpty())
-            throw new UserNotFoundException("Student with ID " + studentId + " not found");
+        UserEntity student = userRepository.findByEmail(studentEmail);
+
+        if (student == null)
+            throw new UserNotFoundException("Student with Email " + studentEmail + " not found");
 
         List<UUID> students = group.getStudents();
-        students.add(studentId);
+        students.add(student.getId());
         group.setStudents(students);
 
         GroupEntity updatedGroup = groupRepository.save(group);

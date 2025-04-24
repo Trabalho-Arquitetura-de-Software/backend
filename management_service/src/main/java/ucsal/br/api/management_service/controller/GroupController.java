@@ -68,8 +68,8 @@ public class GroupController {
     @PreAuthorize("hasRole('ADMIN')")
     @Transactional
     @MutationMapping
-    public GroupDTO groupAddStudent(@Argument UUID groupId, @Argument UUID studentId) {
-        return groupService.addStudent(groupId, studentId);
+    public GroupDTO groupAddStudent(@Argument UUID groupId, @Argument String studentEmail) {
+        return groupService.addStudent(groupId, studentEmail);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
